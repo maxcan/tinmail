@@ -1,0 +1,433 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		50EEAF79195BB6940014A2CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF78195BB6940014A2CA /* AppDelegate.swift */; };
+		50EEAF7C195BB6940014A2CA /* tinmail.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF7A195BB6940014A2CA /* tinmail.xcdatamodeld */; };
+		50EEAF7E195BB6940014A2CA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF7D195BB6940014A2CA /* ViewController.swift */; };
+		50EEAF81195BB6940014A2CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50EEAF7F195BB6940014A2CA /* Main.storyboard */; };
+		50EEAF83195BB6940014A2CA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50EEAF82195BB6940014A2CA /* Images.xcassets */; };
+		50EEAF8F195BB6940014A2CA /* tinmailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF8E195BB6940014A2CA /* tinmailTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		50EEAF89195BB6940014A2CA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50EEAF6B195BB6940014A2CA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 50EEAF72195BB6940014A2CA;
+			remoteInfo = tinmail;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		50EEAF73195BB6940014A2CA /* tinmail.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tinmail.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		50EEAF77195BB6940014A2CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50EEAF78195BB6940014A2CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		50EEAF7B195BB6940014A2CA /* tinmail.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = tinmail.xcdatamodel; sourceTree = "<group>"; };
+		50EEAF7D195BB6940014A2CA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		50EEAF80195BB6940014A2CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		50EEAF82195BB6940014A2CA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		50EEAF88195BB6940014A2CA /* tinmailTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tinmailTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		50EEAF8D195BB6940014A2CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50EEAF8E195BB6940014A2CA /* tinmailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tinmailTests.swift; sourceTree = "<group>"; };
+		50EEAF98195BB6C20014A2CA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		50EEAF70195BB6940014A2CA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50EEAF85195BB6940014A2CA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		50EEAF6A195BB6940014A2CA = {
+			isa = PBXGroup;
+			children = (
+				50EEAF98195BB6C20014A2CA /* README.md */,
+				50EEAF75195BB6940014A2CA /* tinmail */,
+				50EEAF8B195BB6940014A2CA /* tinmailTests */,
+				50EEAF74195BB6940014A2CA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		50EEAF74195BB6940014A2CA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				50EEAF73195BB6940014A2CA /* tinmail.app */,
+				50EEAF88195BB6940014A2CA /* tinmailTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		50EEAF75195BB6940014A2CA /* tinmail */ = {
+			isa = PBXGroup;
+			children = (
+				50EEAF78195BB6940014A2CA /* AppDelegate.swift */,
+				50EEAF7D195BB6940014A2CA /* ViewController.swift */,
+				50EEAF7F195BB6940014A2CA /* Main.storyboard */,
+				50EEAF82195BB6940014A2CA /* Images.xcassets */,
+				50EEAF7A195BB6940014A2CA /* tinmail.xcdatamodeld */,
+				50EEAF76195BB6940014A2CA /* Supporting Files */,
+			);
+			path = tinmail;
+			sourceTree = "<group>";
+		};
+		50EEAF76195BB6940014A2CA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				50EEAF77195BB6940014A2CA /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		50EEAF8B195BB6940014A2CA /* tinmailTests */ = {
+			isa = PBXGroup;
+			children = (
+				50EEAF8E195BB6940014A2CA /* tinmailTests.swift */,
+				50EEAF8C195BB6940014A2CA /* Supporting Files */,
+			);
+			path = tinmailTests;
+			sourceTree = "<group>";
+		};
+		50EEAF8C195BB6940014A2CA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				50EEAF8D195BB6940014A2CA /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		50EEAF72195BB6940014A2CA /* tinmail */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50EEAF92195BB6940014A2CA /* Build configuration list for PBXNativeTarget "tinmail" */;
+			buildPhases = (
+				50EEAF6F195BB6940014A2CA /* Sources */,
+				50EEAF70195BB6940014A2CA /* Frameworks */,
+				50EEAF71195BB6940014A2CA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tinmail;
+			productName = tinmail;
+			productReference = 50EEAF73195BB6940014A2CA /* tinmail.app */;
+			productType = "com.apple.product-type.application";
+		};
+		50EEAF87195BB6940014A2CA /* tinmailTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50EEAF95195BB6940014A2CA /* Build configuration list for PBXNativeTarget "tinmailTests" */;
+			buildPhases = (
+				50EEAF84195BB6940014A2CA /* Sources */,
+				50EEAF85195BB6940014A2CA /* Frameworks */,
+				50EEAF86195BB6940014A2CA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				50EEAF8A195BB6940014A2CA /* PBXTargetDependency */,
+			);
+			name = tinmailTests;
+			productName = tinmailTests;
+			productReference = 50EEAF88195BB6940014A2CA /* tinmailTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		50EEAF6B195BB6940014A2CA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0600;
+				ORGANIZATIONNAME = "Max Cantor";
+				TargetAttributes = {
+					50EEAF72195BB6940014A2CA = {
+						CreatedOnToolsVersion = 6.0;
+					};
+					50EEAF87195BB6940014A2CA = {
+						CreatedOnToolsVersion = 6.0;
+						TestTargetID = 50EEAF72195BB6940014A2CA;
+					};
+				};
+			};
+			buildConfigurationList = 50EEAF6E195BB6940014A2CA /* Build configuration list for PBXProject "tinmail" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 50EEAF6A195BB6940014A2CA;
+			productRefGroup = 50EEAF74195BB6940014A2CA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				50EEAF72195BB6940014A2CA /* tinmail */,
+				50EEAF87195BB6940014A2CA /* tinmailTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		50EEAF71195BB6940014A2CA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50EEAF81195BB6940014A2CA /* Main.storyboard in Resources */,
+				50EEAF83195BB6940014A2CA /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50EEAF86195BB6940014A2CA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		50EEAF6F195BB6940014A2CA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50EEAF7E195BB6940014A2CA /* ViewController.swift in Sources */,
+				50EEAF7C195BB6940014A2CA /* tinmail.xcdatamodeld in Sources */,
+				50EEAF79195BB6940014A2CA /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50EEAF84195BB6940014A2CA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50EEAF8F195BB6940014A2CA /* tinmailTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		50EEAF8A195BB6940014A2CA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 50EEAF72195BB6940014A2CA /* tinmail */;
+			targetProxy = 50EEAF89195BB6940014A2CA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		50EEAF7F195BB6940014A2CA /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				50EEAF80195BB6940014A2CA /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		50EEAF90195BB6940014A2CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				METAL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		50EEAF91195BB6940014A2CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				METAL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		50EEAF93195BB6940014A2CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				INFOPLIST_FILE = tinmail/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		50EEAF94195BB6940014A2CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				INFOPLIST_FILE = tinmail/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		50EEAF96195BB6940014A2CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/tinmail.app/tinmail";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = tinmailTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				METAL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Debug;
+		};
+		50EEAF97195BB6940014A2CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/tinmail.app/tinmail";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = tinmailTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				METAL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		50EEAF6E195BB6940014A2CA /* Build configuration list for PBXProject "tinmail" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50EEAF90195BB6940014A2CA /* Debug */,
+				50EEAF91195BB6940014A2CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		50EEAF92195BB6940014A2CA /* Build configuration list for PBXNativeTarget "tinmail" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50EEAF93195BB6940014A2CA /* Debug */,
+				50EEAF94195BB6940014A2CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		50EEAF95195BB6940014A2CA /* Build configuration list for PBXNativeTarget "tinmailTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50EEAF96195BB6940014A2CA /* Debug */,
+				50EEAF97195BB6940014A2CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		50EEAF7A195BB6940014A2CA /* tinmail.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				50EEAF7B195BB6940014A2CA /* tinmail.xcdatamodel */,
+			);
+			currentVersion = 50EEAF7B195BB6940014A2CA /* tinmail.xcdatamodel */;
+			path = tinmail.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 50EEAF6B195BB6940014A2CA /* Project object */;
+}
