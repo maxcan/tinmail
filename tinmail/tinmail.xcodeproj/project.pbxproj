@@ -13,6 +13,8 @@
 		50EEAF81195BB6940014A2CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50EEAF7F195BB6940014A2CA /* Main.storyboard */; };
 		50EEAF83195BB6940014A2CA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50EEAF82195BB6940014A2CA /* Images.xcassets */; };
 		50EEAF8F195BB6940014A2CA /* tinmailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF8E195BB6940014A2CA /* tinmailTests.swift */; };
+		50F4745D1960C6C600758C39 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F4745C1960C6C600758C39 /* Security.framework */; };
+		50F4745F1960C6CF00758C39 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F4745E1960C6CF00758C39 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +39,8 @@
 		50EEAF8D195BB6940014A2CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50EEAF8E195BB6940014A2CA /* tinmailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tinmailTests.swift; sourceTree = "<group>"; };
 		50EEAF98195BB6C20014A2CA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		50F4745C1960C6C600758C39 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		50F4745E1960C6CF00758C39 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +48,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50F4745F1960C6CF00758C39 /* SystemConfiguration.framework in Frameworks */,
+				50F4745D1960C6C600758C39 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,6 +66,8 @@
 		50EEAF6A195BB6940014A2CA = {
 			isa = PBXGroup;
 			children = (
+				50F4745E1960C6CF00758C39 /* SystemConfiguration.framework */,
+				50F4745C1960C6C600758C39 /* Security.framework */,
 				50EEAF98195BB6C20014A2CA /* README.md */,
 				50EEAF75195BB6940014A2CA /* tinmail */,
 				50EEAF8B195BB6940014A2CA /* tinmailTests */,
@@ -405,6 +413,7 @@
 				50EEAF94195BB6940014A2CA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		50EEAF95195BB6940014A2CA /* Build configuration list for PBXNativeTarget "tinmailTests" */ = {
 			isa = XCConfigurationList;
@@ -413,6 +422,7 @@
 				50EEAF97195BB6940014A2CA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
