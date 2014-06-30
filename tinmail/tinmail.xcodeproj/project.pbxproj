@@ -7,11 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		504F55A81960E5C700353D32 /* OauthVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504F55A71960E5C700353D32 /* OauthVC.swift */; };
 		504F55AA1960E78E00353D32 /* GTMOAuth2ViewTouch.xib in Sources */ = {isa = PBXBuildFile; fileRef = 50F4368F1960D3DA000C4404 /* GTMOAuth2ViewTouch.xib */; };
 		50EEAF79195BB6940014A2CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF78195BB6940014A2CA /* AppDelegate.swift */; };
 		50EEAF7C195BB6940014A2CA /* tinmail.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF7A195BB6940014A2CA /* tinmail.xcdatamodeld */; };
-		50EEAF7E195BB6940014A2CA /* TinmailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF7D195BB6940014A2CA /* TinmailVC.swift */; };
+		50EEAF7E195BB6940014A2CA /* TinmailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF7D195BB6940014A2CA /* TinmailVC.swift */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		50EEAF81195BB6940014A2CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50EEAF7F195BB6940014A2CA /* Main.storyboard */; };
 		50EEAF83195BB6940014A2CA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50EEAF82195BB6940014A2CA /* Images.xcassets */; };
 		50EEAF8F195BB6940014A2CA /* tinmailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF8E195BB6940014A2CA /* tinmailTests.swift */; };
@@ -35,7 +34,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		504F55A71960E5C700353D32 /* OauthVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OauthVC.swift; sourceTree = "<group>"; };
 		50EEAF73195BB6940014A2CA /* tinmail.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tinmail.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50EEAF77195BB6940014A2CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50EEAF78195BB6940014A2CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -108,7 +106,6 @@
 			children = (
 				50EEAF78195BB6940014A2CA /* AppDelegate.swift */,
 				50EEAF7D195BB6940014A2CA /* TinmailVC.swift */,
-				504F55A71960E5C700353D32 /* OauthVC.swift */,
 				50EEAF7F195BB6940014A2CA /* Main.storyboard */,
 				50EEAF82195BB6940014A2CA /* Images.xcassets */,
 				50EEAF7A195BB6940014A2CA /* tinmail.xcdatamodeld */,
@@ -261,7 +258,6 @@
 			files = (
 				50F4368C1960D3D1000C4404 /* GTMHTTPFetcher.m in Sources */,
 				50EEAF7E195BB6940014A2CA /* TinmailVC.swift in Sources */,
-				504F55A81960E5C700353D32 /* OauthVC.swift in Sources */,
 				50EEAF7C195BB6940014A2CA /* tinmail.xcdatamodeld in Sources */,
 				50F436891960D3A1000C4404 /* GTMOAuth2SignIn.m in Sources */,
 				50EEAF79195BB6940014A2CA /* AppDelegate.swift in Sources */,
