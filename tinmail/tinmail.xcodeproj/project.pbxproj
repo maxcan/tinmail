@@ -7,12 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		504F55A81960E5C700353D32 /* OauthVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504F55A71960E5C700353D32 /* OauthVC.swift */; };
+		504F55AA1960E78E00353D32 /* GTMOAuth2ViewTouch.xib in Sources */ = {isa = PBXBuildFile; fileRef = 50F4368F1960D3DA000C4404 /* GTMOAuth2ViewTouch.xib */; };
 		50EEAF79195BB6940014A2CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF78195BB6940014A2CA /* AppDelegate.swift */; };
 		50EEAF7C195BB6940014A2CA /* tinmail.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF7A195BB6940014A2CA /* tinmail.xcdatamodeld */; };
-		50EEAF7E195BB6940014A2CA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF7D195BB6940014A2CA /* ViewController.swift */; };
+		50EEAF7E195BB6940014A2CA /* TinmailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF7D195BB6940014A2CA /* TinmailVC.swift */; };
 		50EEAF81195BB6940014A2CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50EEAF7F195BB6940014A2CA /* Main.storyboard */; };
 		50EEAF83195BB6940014A2CA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50EEAF82195BB6940014A2CA /* Images.xcassets */; };
 		50EEAF8F195BB6940014A2CA /* tinmailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF8E195BB6940014A2CA /* tinmailTests.swift */; };
+		50F436881960D3A1000C4404 /* GTMOAuth2Authentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F436851960D3A1000C4404 /* GTMOAuth2Authentication.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		50F436891960D3A1000C4404 /* GTMOAuth2SignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F436871960D3A1000C4404 /* GTMOAuth2SignIn.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		50F4368C1960D3D1000C4404 /* GTMHTTPFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F4368B1960D3D1000C4404 /* GTMHTTPFetcher.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		50F436901960D3DA000C4404 /* GTMOAuth2ViewControllerTouch.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F4368E1960D3DA000C4404 /* GTMOAuth2ViewControllerTouch.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		50F436911960D3DA000C4404 /* GTMOAuth2ViewTouch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50F4368F1960D3DA000C4404 /* GTMOAuth2ViewTouch.xib */; };
 		50F4745D1960C6C600758C39 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F4745C1960C6C600758C39 /* Security.framework */; };
 		50F4745F1960C6CF00758C39 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F4745E1960C6CF00758C39 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
@@ -28,17 +35,28 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		504F55A71960E5C700353D32 /* OauthVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OauthVC.swift; sourceTree = "<group>"; };
 		50EEAF73195BB6940014A2CA /* tinmail.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tinmail.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50EEAF77195BB6940014A2CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50EEAF78195BB6940014A2CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		50EEAF7B195BB6940014A2CA /* tinmail.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = tinmail.xcdatamodel; sourceTree = "<group>"; };
-		50EEAF7D195BB6940014A2CA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		50EEAF7D195BB6940014A2CA /* TinmailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TinmailVC.swift; sourceTree = "<group>"; };
 		50EEAF80195BB6940014A2CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		50EEAF82195BB6940014A2CA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		50EEAF88195BB6940014A2CA /* tinmailTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tinmailTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		50EEAF8D195BB6940014A2CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50EEAF8E195BB6940014A2CA /* tinmailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tinmailTests.swift; sourceTree = "<group>"; };
 		50EEAF98195BB6C20014A2CA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		50F436841960D3A1000C4404 /* GTMOAuth2Authentication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMOAuth2Authentication.h; path = "../vendor/google/gtm-oauth2-read-only/Source/GTMOAuth2Authentication.h"; sourceTree = "<group>"; };
+		50F436851960D3A1000C4404 /* GTMOAuth2Authentication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMOAuth2Authentication.m; path = "../vendor/google/gtm-oauth2-read-only/Source/GTMOAuth2Authentication.m"; sourceTree = "<group>"; };
+		50F436861960D3A1000C4404 /* GTMOAuth2SignIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMOAuth2SignIn.h; path = "../vendor/google/gtm-oauth2-read-only/Source/GTMOAuth2SignIn.h"; sourceTree = "<group>"; };
+		50F436871960D3A1000C4404 /* GTMOAuth2SignIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMOAuth2SignIn.m; path = "../vendor/google/gtm-oauth2-read-only/Source/GTMOAuth2SignIn.m"; sourceTree = "<group>"; };
+		50F4368A1960D3D1000C4404 /* GTMHTTPFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMHTTPFetcher.h; path = "../vendor/google/gtm-oauth2-read-only/HTTPFetcher/GTMHTTPFetcher.h"; sourceTree = "<group>"; };
+		50F4368B1960D3D1000C4404 /* GTMHTTPFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMHTTPFetcher.m; path = "../vendor/google/gtm-oauth2-read-only/HTTPFetcher/GTMHTTPFetcher.m"; sourceTree = "<group>"; };
+		50F4368D1960D3DA000C4404 /* GTMOAuth2ViewControllerTouch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTMOAuth2ViewControllerTouch.h; path = "../vendor/google/gtm-oauth2-read-only/Source/Touch/GTMOAuth2ViewControllerTouch.h"; sourceTree = "<group>"; };
+		50F4368E1960D3DA000C4404 /* GTMOAuth2ViewControllerTouch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTMOAuth2ViewControllerTouch.m; path = "../vendor/google/gtm-oauth2-read-only/Source/Touch/GTMOAuth2ViewControllerTouch.m"; sourceTree = "<group>"; };
+		50F4368F1960D3DA000C4404 /* GTMOAuth2ViewTouch.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GTMOAuth2ViewTouch.xib; path = "../vendor/google/gtm-oauth2-read-only/Source/Touch/GTMOAuth2ViewTouch.xib"; sourceTree = "<group>"; };
+		50F436921960D44F000C4404 /* tinmail-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "tinmail-Bridging-Header.h"; sourceTree = "<group>"; };
 		50F4745C1960C6C600758C39 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		50F4745E1960C6CF00758C39 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -66,6 +84,7 @@
 		50EEAF6A195BB6940014A2CA = {
 			isa = PBXGroup;
 			children = (
+				50F474601960C82B00758C39 /* gtm-oauth2 */,
 				50F4745E1960C6CF00758C39 /* SystemConfiguration.framework */,
 				50F4745C1960C6C600758C39 /* Security.framework */,
 				50EEAF98195BB6C20014A2CA /* README.md */,
@@ -88,11 +107,13 @@
 			isa = PBXGroup;
 			children = (
 				50EEAF78195BB6940014A2CA /* AppDelegate.swift */,
-				50EEAF7D195BB6940014A2CA /* ViewController.swift */,
+				50EEAF7D195BB6940014A2CA /* TinmailVC.swift */,
+				504F55A71960E5C700353D32 /* OauthVC.swift */,
 				50EEAF7F195BB6940014A2CA /* Main.storyboard */,
 				50EEAF82195BB6940014A2CA /* Images.xcassets */,
 				50EEAF7A195BB6940014A2CA /* tinmail.xcdatamodeld */,
 				50EEAF76195BB6940014A2CA /* Supporting Files */,
+				50F436921960D44F000C4404 /* tinmail-Bridging-Header.h */,
 			);
 			path = tinmail;
 			sourceTree = "<group>";
@@ -120,6 +141,22 @@
 				50EEAF8D195BB6940014A2CA /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		50F474601960C82B00758C39 /* gtm-oauth2 */ = {
+			isa = PBXGroup;
+			children = (
+				50F4368D1960D3DA000C4404 /* GTMOAuth2ViewControllerTouch.h */,
+				50F4368E1960D3DA000C4404 /* GTMOAuth2ViewControllerTouch.m */,
+				50F4368F1960D3DA000C4404 /* GTMOAuth2ViewTouch.xib */,
+				50F4368A1960D3D1000C4404 /* GTMHTTPFetcher.h */,
+				50F4368B1960D3D1000C4404 /* GTMHTTPFetcher.m */,
+				50F436841960D3A1000C4404 /* GTMOAuth2Authentication.h */,
+				50F436851960D3A1000C4404 /* GTMOAuth2Authentication.m */,
+				50F436861960D3A1000C4404 /* GTMOAuth2SignIn.h */,
+				50F436871960D3A1000C4404 /* GTMOAuth2SignIn.m */,
+			);
+			name = "gtm-oauth2";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -202,6 +239,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50F436911960D3DA000C4404 /* GTMOAuth2ViewTouch.xib in Resources */,
 				50EEAF81195BB6940014A2CA /* Main.storyboard in Resources */,
 				50EEAF83195BB6940014A2CA /* Images.xcassets in Resources */,
 			);
@@ -221,9 +259,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50EEAF7E195BB6940014A2CA /* ViewController.swift in Sources */,
+				50F4368C1960D3D1000C4404 /* GTMHTTPFetcher.m in Sources */,
+				50EEAF7E195BB6940014A2CA /* TinmailVC.swift in Sources */,
+				504F55A81960E5C700353D32 /* OauthVC.swift in Sources */,
 				50EEAF7C195BB6940014A2CA /* tinmail.xcdatamodeld in Sources */,
+				50F436891960D3A1000C4404 /* GTMOAuth2SignIn.m in Sources */,
 				50EEAF79195BB6940014A2CA /* AppDelegate.swift in Sources */,
+				50F436901960D3DA000C4404 /* GTMOAuth2ViewControllerTouch.m in Sources */,
+				50F436881960D3A1000C4404 /* GTMOAuth2Authentication.m in Sources */,
+				504F55AA1960E78E00353D32 /* GTMOAuth2ViewTouch.xib in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,7 +335,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				METAL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -327,7 +371,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				METAL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -339,10 +383,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = tinmail/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_MODULE_NAME = tinmail;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "tinmail/tinmail-Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -351,10 +398,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = tinmail/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_MODULE_NAME = tinmail;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "tinmail/tinmail-Bridging-Header.h";
 			};
 			name = Release;
 		};
