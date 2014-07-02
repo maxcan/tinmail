@@ -8,3 +8,5 @@
 
 .DS_Store
 **/xcuserdata/
+vendor/google/gtm-oauth2-read-only/Examples/OAuth2SampleTouch/OAuth2SampleTouch.xcodeproj/project.xcworkspace/
+**/project.xcworkspace/

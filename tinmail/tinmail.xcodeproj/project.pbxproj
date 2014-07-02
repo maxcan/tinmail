@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		504F55AA1960E78E00353D32 /* GTMOAuth2ViewTouch.xib in Sources */ = {isa = PBXBuildFile; fileRef = 50F4368F1960D3DA000C4404 /* GTMOAuth2ViewTouch.xib */; };
+		50E327C91963CCA6005DF2CE /* AccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E327C81963CCA6005DF2CE /* AccountVC.swift */; };
 		50EEAF79195BB6940014A2CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF78195BB6940014A2CA /* AppDelegate.swift */; };
 		50EEAF7C195BB6940014A2CA /* tinmail.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF7A195BB6940014A2CA /* tinmail.xcdatamodeld */; };
 		50EEAF7E195BB6940014A2CA /* TinmailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF7D195BB6940014A2CA /* TinmailVC.swift */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -34,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		50E327C81963CCA6005DF2CE /* AccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountVC.swift; sourceTree = "<group>"; };
 		50EEAF73195BB6940014A2CA /* tinmail.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tinmail.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50EEAF77195BB6940014A2CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50EEAF78195BB6940014A2CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 				50EEAF7A195BB6940014A2CA /* tinmail.xcdatamodeld */,
 				50EEAF76195BB6940014A2CA /* Supporting Files */,
 				50F436921960D44F000C4404 /* tinmail-Bridging-Header.h */,
+				50E327C81963CCA6005DF2CE /* AccountVC.swift */,
 			);
 			path = tinmail;
 			sourceTree = "<group>";
@@ -264,6 +267,7 @@
 				50F436901960D3DA000C4404 /* GTMOAuth2ViewControllerTouch.m in Sources */,
 				50F436881960D3A1000C4404 /* GTMOAuth2Authentication.m in Sources */,
 				504F55AA1960E78E00353D32 /* GTMOAuth2ViewTouch.xib in Sources */,
+				50E327C91963CCA6005DF2CE /* AccountVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
