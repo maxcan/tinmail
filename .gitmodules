@@ -1,0 +1,3 @@
+[submodule "vendor/maxcan/swiftz"]
+	path = vendor/maxcan/swiftz
+	url = git@github.com:maxcan/swiftz.git

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		501DCBB7196515A100AA1C5C /* GmailAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501DCBB6196515A100AA1C5C /* GmailAPI.swift */; };
 		504F55AA1960E78E00353D32 /* GTMOAuth2ViewTouch.xib in Sources */ = {isa = PBXBuildFile; fileRef = 50F4368F1960D3DA000C4404 /* GTMOAuth2ViewTouch.xib */; };
 		50E327C91963CCA6005DF2CE /* AccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E327C81963CCA6005DF2CE /* AccountVC.swift */; };
 		50EEAF79195BB6940014A2CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF78195BB6940014A2CA /* AppDelegate.swift */; };
@@ -34,7 +35,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		502FAC7C19652CB100B7C7D1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		501DCBB6196515A100AA1C5C /* GmailAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GmailAPI.swift; sourceTree = "<group>"; };
 		50E327C81963CCA6005DF2CE /* AccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountVC.swift; sourceTree = "<group>"; };
 		50EEAF73195BB6940014A2CA /* tinmail.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tinmail.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50EEAF77195BB6940014A2CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -114,6 +128,7 @@
 				50EEAF76195BB6940014A2CA /* Supporting Files */,
 				50F436921960D44F000C4404 /* tinmail-Bridging-Header.h */,
 				50E327C81963CCA6005DF2CE /* AccountVC.swift */,
+				501DCBB6196515A100AA1C5C /* GmailAPI.swift */,
 			);
 			path = tinmail;
 			sourceTree = "<group>";
@@ -166,6 +181,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 50EEAF92195BB6940014A2CA /* Build configuration list for PBXNativeTarget "tinmail" */;
 			buildPhases = (
+				502FAC7C19652CB100B7C7D1 /* CopyFiles */,
 				50EEAF6F195BB6940014A2CA /* Sources */,
 				50EEAF70195BB6940014A2CA /* Frameworks */,
 				50EEAF71195BB6940014A2CA /* Resources */,
@@ -268,6 +284,7 @@
 				50F436881960D3A1000C4404 /* GTMOAuth2Authentication.m in Sources */,
 				504F55AA1960E78E00353D32 /* GTMOAuth2ViewTouch.xib in Sources */,
 				50E327C91963CCA6005DF2CE /* AccountVC.swift in Sources */,
+				501DCBB7196515A100AA1C5C /* GmailAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,9 +401,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				DEFINES_MODULE = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/max/development/tinmail/vendor/maxcan/swiftz/build/Release,
+				);
 				INFOPLIST_FILE = tinmail/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_MODULE_NAME = tinmail;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "tinmail/tinmail-Bridging-Header.h";
@@ -399,9 +421,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				DEFINES_MODULE = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/max/development/tinmail/vendor/maxcan/swiftz/build/Release,
+				);
 				INFOPLIST_FILE = tinmail/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_MODULE_NAME = tinmail;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "tinmail/tinmail-Bridging-Header.h";

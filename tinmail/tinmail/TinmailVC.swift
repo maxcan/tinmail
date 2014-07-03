@@ -21,15 +21,19 @@ class TinmailVC: UIViewController {
         gAuth = GTMOAuth2ViewControllerTouch.authForGoogleFromKeychainForName(kKeychainItemName,
             clientID:kMyClientID,
             clientSecret:kMyClientSecret)
-        println(gAuth?.accessToken)
-        if gAuth?.accessToken == nil {
+        println(gAuth)
+        if gAuth?.refreshToken == nil {
             self.performSegueWithIdentifier("showLogin", sender:self)
         } else {
             var g = gAuth
             getUserId()
         }
     }
+    override func viewDidAppear(animated: Bool) {
+        getUserId()
+    }
     func getUserId() {
+        if (gAuth?.refreshToken == nil) {return}
         if let a = gAuth {
             let userIdUrl = "https://www.googleapis.com/gmail/v1/users/me/messages"
             var fetcher:GTMHTTPFetcher = GTMHTTPFetcher(URLString: userIdUrl)
@@ -42,7 +46,6 @@ class TinmailVC: UIViewController {
                 println(jsonDict)
                 })
             println("getUserId succ")
-            
         }
     }
     
