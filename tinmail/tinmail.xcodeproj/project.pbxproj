@@ -26,6 +26,76 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		506A6267196771B800994ADB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 506A625F196771B800994ADB /* swiftz.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 59F35AE0193D3A0A006F1341;
+			remoteInfo = swiftz;
+		};
+		506A6269196771B800994ADB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 506A625F196771B800994ADB /* swiftz.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 59F35AEB193D3A0A006F1341;
+			remoteInfo = swiftzTests;
+		};
+		506A626B196771B800994ADB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 506A625F196771B800994ADB /* swiftz.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 506A621219676A8200994ADB;
+			remoteInfo = swiftz_ios;
+		};
+		506A626D196771B800994ADB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 506A625F196771B800994ADB /* swiftz.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 506A621C19676A8200994ADB;
+			remoteInfo = swiftz_iosTests;
+		};
+		506A6281196771FB00994ADB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 506A625F196771B800994ADB /* swiftz.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 506A621119676A8200994ADB;
+			remoteInfo = swiftz_ios;
+		};
+		507A4A761967722B00F02E30 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 507A4A6C1967722B00F02E30 /* swiftz_core.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 59BB97DC195EFAF2002C0FA1;
+			remoteInfo = swiftz_core;
+		};
+		507A4A781967722B00F02E30 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 507A4A6C1967722B00F02E30 /* swiftz_core.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 59BB97E7195EFAF2002C0FA1;
+			remoteInfo = swiftz_coreTests;
+		};
+		507A4A7A1967722B00F02E30 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 507A4A6C1967722B00F02E30 /* swiftz_core.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 506A61CE1967692800994ADB;
+			remoteInfo = swiftz_core_ios;
+		};
+		507A4A7C1967722B00F02E30 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 507A4A6C1967722B00F02E30 /* swiftz_core.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 506A61D81967692800994ADB;
+			remoteInfo = swiftz_core_iosTests;
+		};
+		507A4A7E1967725500F02E30 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 507A4A6C1967722B00F02E30 /* swiftz_core.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 506A61CD1967692800994ADB;
+			remoteInfo = swiftz_core_ios;
+		};
 		50EEAF89195BB6940014A2CA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 50EEAF6B195BB6940014A2CA /* Project object */;
@@ -49,6 +119,8 @@
 
 /* Begin PBXFileReference section */
 		501DCBB6196515A100AA1C5C /* GmailAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GmailAPI.swift; sourceTree = "<group>"; };
+		506A625F196771B800994ADB /* swiftz.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = swiftz.xcodeproj; path = ../vendor/maxcan/swiftz/swiftz.xcodeproj; sourceTree = "<group>"; };
+		507A4A6C1967722B00F02E30 /* swiftz_core.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = swiftz_core.xcodeproj; path = ../vendor/maxcan/swiftz/swiftz_core/swiftz_core.xcodeproj; sourceTree = "<group>"; };
 		50E327C81963CCA6005DF2CE /* AccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountVC.swift; sourceTree = "<group>"; };
 		50EEAF73195BB6940014A2CA /* tinmail.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tinmail.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50EEAF77195BB6940014A2CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -95,9 +167,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		506A6260196771B800994ADB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				506A6268196771B800994ADB /* swiftz.framework */,
+				506A626A196771B800994ADB /* swiftzTests.xctest */,
+				506A626C196771B800994ADB /* swiftz_ios.framework */,
+				506A626E196771B800994ADB /* swiftz_iosTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		507A4A6D1967722B00F02E30 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				507A4A771967722B00F02E30 /* swiftz_core.framework */,
+				507A4A791967722B00F02E30 /* swiftz_coreTests.xctest */,
+				507A4A7B1967722B00F02E30 /* swiftz_core_ios.framework */,
+				507A4A7D1967722B00F02E30 /* swiftz_core_iosTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		50EEAF6A195BB6940014A2CA = {
 			isa = PBXGroup;
 			children = (
+				507A4A6C1967722B00F02E30 /* swiftz_core.xcodeproj */,
+				506A625F196771B800994ADB /* swiftz.xcodeproj */,
 				50F474601960C82B00758C39 /* gtm-oauth2 */,
 				50F4745E1960C6CF00758C39 /* SystemConfiguration.framework */,
 				50F4745C1960C6C600758C39 /* Security.framework */,
@@ -189,6 +285,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				507A4A7F1967725500F02E30 /* PBXTargetDependency */,
+				506A6282196771FB00994ADB /* PBXTargetDependency */,
 			);
 			name = tinmail;
 			productName = tinmail;
@@ -242,6 +340,16 @@
 			mainGroup = 50EEAF6A195BB6940014A2CA;
 			productRefGroup = 50EEAF74195BB6940014A2CA /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 506A6260196771B800994ADB /* Products */;
+					ProjectRef = 506A625F196771B800994ADB /* swiftz.xcodeproj */;
+				},
+				{
+					ProductGroup = 507A4A6D1967722B00F02E30 /* Products */;
+					ProjectRef = 507A4A6C1967722B00F02E30 /* swiftz_core.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				50EEAF72195BB6940014A2CA /* tinmail */,
@@ -249,6 +357,65 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		506A6268196771B800994ADB /* swiftz.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = swiftz.framework;
+			remoteRef = 506A6267196771B800994ADB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		506A626A196771B800994ADB /* swiftzTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = swiftzTests.xctest;
+			remoteRef = 506A6269196771B800994ADB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		506A626C196771B800994ADB /* swiftz_ios.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = swiftz_ios.framework;
+			remoteRef = 506A626B196771B800994ADB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		506A626E196771B800994ADB /* swiftz_iosTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = swiftz_iosTests.xctest;
+			remoteRef = 506A626D196771B800994ADB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		507A4A771967722B00F02E30 /* swiftz_core.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = swiftz_core.framework;
+			remoteRef = 507A4A761967722B00F02E30 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		507A4A791967722B00F02E30 /* swiftz_coreTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = swiftz_coreTests.xctest;
+			remoteRef = 507A4A781967722B00F02E30 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		507A4A7B1967722B00F02E30 /* swiftz_core_ios.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = swiftz_core_ios.framework;
+			remoteRef = 507A4A7A1967722B00F02E30 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		507A4A7D1967722B00F02E30 /* swiftz_core_iosTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = swiftz_core_iosTests.xctest;
+			remoteRef = 507A4A7C1967722B00F02E30 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		50EEAF71195BB6940014A2CA /* Resources */ = {
@@ -299,6 +466,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		506A6282196771FB00994ADB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = swiftz_ios;
+			targetProxy = 506A6281196771FB00994ADB /* PBXContainerItemProxy */;
+		};
+		507A4A7F1967725500F02E30 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = swiftz_core_ios;
+			targetProxy = 507A4A7E1967725500F02E30 /* PBXContainerItemProxy */;
+		};
 		50EEAF8A195BB6940014A2CA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 50EEAF72195BB6940014A2CA /* tinmail */;

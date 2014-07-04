@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import swiftz
+import swiftz_ios
 
 let kMsgListUrl = "https://www.googleapis.com/gmail/v1/users/me/messages"
 
@@ -42,8 +42,8 @@ class MsgList {
 }
 
 func getMsgList(auth:GTMOAuth2Authentication) -> MsgList? {
-    var fetcher:GTMHTTPFetcher = GTMHTTPFetcher(URLString: userIdUrl)
-    fetcher.authorizer = a
+    var fetcher:GTMHTTPFetcher = GTMHTTPFetcher(URLString: kMsgListUrl)
+    fetcher.authorizer = auth
     fetcher.beginFetchWithCompletionHandler({ s1, s2 in
         if (s2 != nil) {
             println("erorr", s2)
@@ -52,5 +52,5 @@ func getMsgList(auth:GTMOAuth2Authentication) -> MsgList? {
         println(jsonDict)
         })
     println("getUserId succ")
-
+    return nil
 }
