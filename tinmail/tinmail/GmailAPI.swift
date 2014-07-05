@@ -47,7 +47,7 @@ class Msg : Printable, JSONDecode {
     let subject: String
     let threadId:String
     let deliveredTo: String?
-    init(_ id:String, _ from:String, _ threadId:String, _ subject: String) {
+    init(id:String, from:String, threadId:String, subject: String) {
         self.id = id
         self.threadId = threadId
         self.from = from
@@ -57,24 +57,20 @@ class Msg : Printable, JSONDecode {
     var description:String {
         return "msg"
     }
-    class func create(id: String) -> (threadId: String) -> (subj: String) -> (from: String) -> Msg {
-        return Msg(id:id, t)
+    class func create(id: String)(from: String)(threadId: String)(subject: String) -> Msg {
+        return Msg(id:id, from: from, threadId: threadId, subject: subject)
     }
     class func fromJSON(x: JSValue) -> Msg? {
         switch (x) {
             case let .JSObject(d):
                 let i:String? = d["id"] >>= JString.fromJSON
                 let ti:String? = d["threadId"] >>= JString.fromJSON
-                let payload = d["payload"] >>= JDictionary<String, JSValue>.fromJSON
-                switch(payload) {
+                switch(d["payload"]) {
                     case let .Some(.JSObject(payloadDict)):
                         let subj:String? = d["Subject"] >>= JString.fromJSON
                         let from:String? = d["From"] >>= JString.fromJSON
-                
-                        return Optional.None
-                    
+                        return create <^> i <*> from <*> ti <*> subj
                     default: return Optional.None
-                    
                 }
             default: return Optional.None
         }
@@ -97,6 +93,28 @@ class MsgList : JSONDecode {
         }
     }
 }
+
+func getMsgDtl(auth: GTMOAuth2Authentication, msgRef: MsgRef) -> Future<Msg?> {
+   var msgMvar: MVar<Msg?> = MVar()
+    var fetcher:GTMHTTPFetcher =
+        GTMHTTPFetcher(URLString: "https://www.googleapis.com/gmail/v1/users/me/messages/\(msgRef.id)")
+    fetcher.authorizer = auth
+    fetcher.shouldFetchInBackground = true
+    let res = fetcher.beginFetchWithCompletionHandler({ s1, s2 in
+        if (s2 != nil) {
+            println("erorr", s2)
+            Future(exec:gcdExecutionContext, { msgMvar.put(nil)})
+            return
+        }
+        if let msg = Msg.fromJSON(JSValue.decode(s1)) {
+            Future(exec:gcdExecutionContext, { msgMvar.put(msg)})
+        } else {
+            Future(exec:gcdExecutionContext, { msgMvar.put(nil)})
+        }
+    })
+    return Future(exec: gcdExecutionContext) {return msgMvar.take()}
+}
+
 
 func getMsgList(auth:GTMOAuth2Authentication) -> Future<MsgList?> {
     var msgListMvar: MVar<MsgList?> = MVar()

@@ -46,22 +46,41 @@ class TinmailVC: UIViewController {
     }
     override func viewDidAppear(animated: Bool) {
         println("vDA")
-//        getUserId()
     }
     func getUserId() {
         println("getUserId")
         if (GAuthSingleton.sharedAuth()?.refreshToken == nil) {
             println("authsingleton reftoken is null")
         }
-        if let a = GAuthSingleton.sharedAuth() {
-            let msgListFut = getMsgList(a)
+        if let auth = GAuthSingleton.sharedAuth() {
+            let msgListFut = getMsgList(auth)
+//            let _:Future<()> = msgListFut.map { msgList in
+//                println("msgslist:  " + msgList.description)
+//                if let mg = msgList {
+//                    println(mg.description)
+//                    let msgFut = getMsgDtl(auth, mg.messages[0])
+//                    println("getting messages")
+//                    msgFut.map { msgDtl in
+//                        println("we have  amsg: " + msgDtl.description)
+//                    }
+//                }
+//                
+//            }
+//            return
             println("we have a msglist fut")
-            let _:Future<()> = Future(exec:gcdExecutionContext) {
+            let _:Future<()> = Future(exec:gcdExecutionContext, "getList") {
                 let msgList = msgListFut.result()
                 if let mg = msgList {
-                    println("a: " + mg.description)
+                    println(mg.description)
+                    let msgFut = getMsgDtl(auth, mg.messages[0])
+                    //let _:Future<()> = Future(exec:gcdExecutionContext, "getdtl") {
+                        println("msg detail: about to fetch")
+                        let dtl = msgFut.result()
+                        println("msg detail: " + dtl.description)
+                    //}
                 }
             }
+            println("done")
         }
     }
 }

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		501DCBB7196515A100AA1C5C /* GmailAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501DCBB6196515A100AA1C5C /* GmailAPI.swift */; };
-		504C8D041967AAD6009B7A16 /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504C8D031967AAD6009B7A16 /* Classes.swift */; };
 		504F55AA1960E78E00353D32 /* GTMOAuth2ViewTouch.xib in Sources */ = {isa = PBXBuildFile; fileRef = 50F4368F1960D3DA000C4404 /* GTMOAuth2ViewTouch.xib */; };
 		50E327C91963CCA6005DF2CE /* AccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E327C81963CCA6005DF2CE /* AccountVC.swift */; };
 		50EEAF79195BB6940014A2CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF78195BB6940014A2CA /* AppDelegate.swift */; };
@@ -120,7 +119,6 @@
 
 /* Begin PBXFileReference section */
 		501DCBB6196515A100AA1C5C /* GmailAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GmailAPI.swift; sourceTree = "<group>"; };
-		504C8D031967AAD6009B7A16 /* Classes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Classes.swift; sourceTree = "<group>"; };
 		506A625F196771B800994ADB /* swiftz.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = swiftz.xcodeproj; path = ../vendor/maxcan/swiftz/swiftz.xcodeproj; sourceTree = "<group>"; };
 		507A4A6C1967722B00F02E30 /* swiftz_core.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = swiftz_core.xcodeproj; path = ../vendor/maxcan/swiftz/swiftz_core/swiftz_core.xcodeproj; sourceTree = "<group>"; };
 		50E327C81963CCA6005DF2CE /* AccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountVC.swift; sourceTree = "<group>"; };
@@ -227,7 +225,6 @@
 				50F436921960D44F000C4404 /* tinmail-Bridging-Header.h */,
 				50E327C81963CCA6005DF2CE /* AccountVC.swift */,
 				501DCBB6196515A100AA1C5C /* GmailAPI.swift */,
-				504C8D031967AAD6009B7A16 /* Classes.swift */,
 			);
 			path = tinmail;
 			sourceTree = "<group>";
@@ -452,7 +449,6 @@
 				50EEAF79195BB6940014A2CA /* AppDelegate.swift in Sources */,
 				50F436901960D3DA000C4404 /* GTMOAuth2ViewControllerTouch.m in Sources */,
 				50F436881960D3A1000C4404 /* GTMOAuth2Authentication.m in Sources */,
-				504C8D041967AAD6009B7A16 /* Classes.swift in Sources */,
 				504F55AA1960E78E00353D32 /* GTMOAuth2ViewTouch.xib in Sources */,
 				50E327C91963CCA6005DF2CE /* AccountVC.swift in Sources */,
 				501DCBB7196515A100AA1C5C /* GmailAPI.swift in Sources */,
