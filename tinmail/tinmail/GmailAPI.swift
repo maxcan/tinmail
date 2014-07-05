@@ -41,13 +41,13 @@ class MsgRef : Printable, JSONDecode, JSONEncode, JSON {
     }
 }
 
-class Msg : Printable {
+class Msg : Printable, JSONDecode {
     let id: String
     let from: String
     let subject: String
     let threadId:String
     let deliveredTo: String?
-    init(id:String, from:String, threadId:String, subject: String, extraHeaders: NSDictionary) {
+    init(_ id:String, _ from:String, _ threadId:String, _ subject: String) {
         self.id = id
         self.threadId = threadId
         self.from = from
@@ -56,6 +56,28 @@ class Msg : Printable {
     }
     var description:String {
         return "msg"
+    }
+    class func create(id: String) -> (threadId: String) -> (subj: String) -> (from: String) -> Msg {
+        return Msg(id:id, t)
+    }
+    class func fromJSON(x: JSValue) -> Msg? {
+        switch (x) {
+            case let .JSObject(d):
+                let i:String? = d["id"] >>= JString.fromJSON
+                let ti:String? = d["threadId"] >>= JString.fromJSON
+                let payload = d["payload"] >>= JDictionary<String, JSValue>.fromJSON
+                switch(payload) {
+                    case let .Some(.JSObject(payloadDict)):
+                        let subj:String? = d["Subject"] >>= JString.fromJSON
+                        let from:String? = d["From"] >>= JString.fromJSON
+                
+                        return Optional.None
+                    
+                    default: return Optional.None
+                    
+                }
+            default: return Optional.None
+        }
     }
 }
 
