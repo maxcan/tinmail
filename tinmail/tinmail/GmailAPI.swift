@@ -8,49 +8,91 @@
 
 import Foundation
 import swiftz_ios
+import swiftz_core_ios
 
-let kMsgListUrl = "https://www.googleapis.com/gmail/v1/users/me/messages"
+let kMsgListUrl = "https://www.googleapis.com/gmail/v1/users/me/messages?q=-label:tinmailed"
 
-class MsgRef {
-    var id:String
-    var threadId:String
+class MsgRef : Printable, JSONDecode, JSONEncode, JSON {
+    let id:String
+    let threadId:String
     init(id:String, threadId:String) {
-        self.id = "id"
-        self.threadId = "tid"
+        self.id = id
+        self.threadId = threadId
+    }
+    var description: String {return "MsgRef: id:\(self.id) threadId:\(self.threadId)"}
+    typealias J = MsgRef
+//    class func show(ref: MsgRef) -> String {
+//        return "MsgRef: id:\(ref.id) threadId:\(ref.threadId)"
+//    }
+    func toJSON(x: J) -> JSValue {
+        return JSValue.JSObject(["id": JSValue.JSString(x.id), "threadId": JSValue.JSString(x.threadId)])
+    }
+    class func fromJSON(x: JSValue) -> MsgRef? {
+        switch (x) {
+            case let .JSObject(d):
+                let i:String? = d["id"] >>= JString.fromJSON
+                let ti:String? = d["threadId"] >>= JString.fromJSON
+                switch(i, ti) {
+                    case (let .Some(si), let .Some(sti)): return MsgRef(id:si, threadId:sti)
+                    default: return Optional.None
+                }
+            default: return Optional.None
+        }
     }
 }
 
-func msgRefFromJson(json:NSDictionary) -> MsgRef? {
-    switch (json["id"] as? String, json["threadId"] as? String) {
-    case (.Some(let id), .Some(let tId)): return MsgRef(id:id, threadId: tId)
-    default: return nil
+class Msg : Printable {
+    let id: String
+    let from: String
+    let subject: String
+    let threadId:String
+    let deliveredTo: String?
+    init(id:String, from:String, threadId:String, subject: String, extraHeaders: NSDictionary) {
+        self.id = id
+        self.threadId = threadId
+        self.from = from
+        self.subject = subject
+        self.deliveredTo = nil
+    }
+    var description:String {
+        return "msg"
     }
 }
 
-func msgListFromJson(rawJsonData:NSDictionary) -> MsgList? {
-    if let msgsJson = rawJsonData["messages"] as? NSDictionary[] {
-        // better error checking here would be good
-        return MsgList(messages:msgsJson.map({msgRefFromJson($0)!}))
-    } else {
-        return nil
-    }
-}
-
-class MsgList {
+class MsgList : JSONDecode {
     let messages:MsgRef[]
-    init(messages:MsgRef[]) { self.messages = messages }
+    init(_ messages:MsgRef[]) { self.messages = messages }
+    var description: String {
+        return "MsgList: " + self.messages.description
+    }
+    class func fromJSON(x: JSValue) -> MsgList? {
+        var msgs:MsgRef[]?
+        switch (x) {
+            case let .JSObject(dict):
+                msgs = dict["messages"] >>= JArray<MsgRef, MsgRef>.fromJSON
+                if let m = msgs {return MsgList(m)} else { return Optional.None}
+            default: return Optional.None
+        }
+    }
 }
 
-func getMsgList(auth:GTMOAuth2Authentication) -> MsgList? {
+func getMsgList(auth:GTMOAuth2Authentication) -> Future<MsgList?> {
+    var msgListMvar: MVar<MsgList?> = MVar()
     var fetcher:GTMHTTPFetcher = GTMHTTPFetcher(URLString: kMsgListUrl)
     fetcher.authorizer = auth
-    fetcher.beginFetchWithCompletionHandler({ s1, s2 in
+    fetcher.shouldFetchInBackground = true
+    let res = fetcher.beginFetchWithCompletionHandler({ s1, s2 in
         if (s2 != nil) {
             println("erorr", s2)
+            Future(exec:gcdExecutionContext, { msgListMvar.put(nil)})
+            return
         }
-        let jsonDict = NSJSONSerialization.JSONObjectWithData(s1, options: nil, error: nil) as NSDictionary
-        println(jsonDict)
-        })
-    println("getUserId succ")
-    return nil
+        if let msgList = MsgList.fromJSON(JSValue.decode(s1)) {
+            Future(exec:gcdExecutionContext, { msgListMvar.put(msgList)})
+        } else {
+            Future(exec:gcdExecutionContext, { msgListMvar.put(nil)})
+        }
+    })
+    return Future(exec: gcdExecutionContext) {return msgListMvar.take()}
 }
+

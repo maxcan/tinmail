@@ -7,47 +7,62 @@
 //
 
 import UIKit
+import swiftz_ios
 
 let kKeychainItemName = "OAuth2 Sample: Google+"
 let kMyClientID = "241491780934-na17dn4btvf2m2843cgvic8n6s0l13vc.apps.googleusercontent.com"    // pre-assigned by service
 let kMyClientSecret = "mWx1B6A9RonGSIxI6m21itn9" // pre-assigned by service
-var gAuth:GTMOAuth2Authentication? = nil
+// var gAuth:GTMOAuth2Authentication? = nil
+
+class GAuthSingleton {
+    var auth: GTMOAuth2Authentication?
+    class func sharedAuth() -> GTMOAuth2Authentication? {
+        return GAuthSingleton.sharedInstance.auth
+    }
+    class var sharedInstance : GAuthSingleton {
+        struct Static {
+            static let instance : GAuthSingleton = GAuthSingleton()
+        }
+        return Static.instance
+    }
+}
+
 
 class TinmailVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        println(gAuth?.accessToken)
-        gAuth = GTMOAuth2ViewControllerTouch.authForGoogleFromKeychainForName(kKeychainItemName,
+        println(GAuthSingleton.sharedAuth()?.refreshToken)
+        GAuthSingleton.sharedInstance.auth = GTMOAuth2ViewControllerTouch.authForGoogleFromKeychainForName(kKeychainItemName,
             clientID:kMyClientID,
             clientSecret:kMyClientSecret)
-        println(gAuth)
-        if gAuth?.refreshToken == nil {
+        println(GAuthSingleton.sharedAuth()?.refreshToken)
+        if GAuthSingleton.sharedAuth()?.refreshToken == nil {
             self.performSegueWithIdentifier("showLogin", sender:self)
         } else {
-            var g = gAuth
+        println("have ref token")
             getUserId()
         }
     }
     override func viewDidAppear(animated: Bool) {
-        getUserId()
+        println("vDA")
+//        getUserId()
     }
     func getUserId() {
-        if (gAuth?.refreshToken == nil) {return}
-        if let a = gAuth {
-            let userIdUrl = "https://www.googleapis.com/gmail/v1/users/me/messages"
-            var fetcher:GTMHTTPFetcher = GTMHTTPFetcher(URLString: userIdUrl)
-            fetcher.authorizer = a
-            fetcher.beginFetchWithCompletionHandler({ s1, s2 in
-                if (s2 != nil) {
-                    println("erorr", s2)
+        println("getUserId")
+        if (GAuthSingleton.sharedAuth()?.refreshToken == nil) {
+            println("authsingleton reftoken is null")
+        }
+        if let a = GAuthSingleton.sharedAuth() {
+            let msgListFut = getMsgList(a)
+            println("we have a msglist fut")
+            let _:Future<()> = Future(exec:gcdExecutionContext) {
+                let msgList = msgListFut.result()
+                if let mg = msgList {
+                    println("a: " + mg.description)
                 }
-                let jsonDict = NSJSONSerialization.JSONObjectWithData(s1, options: nil, error: nil) as NSDictionary
-                println(jsonDict)
-                })
-            println("getUserId succ")
+            }
         }
     }
-    
 }
 
