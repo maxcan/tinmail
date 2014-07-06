@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import swiftz_ios
-import swiftz_core_ios
+import swiftz
+import swiftz_core
 
 let kMsgListUrl = "https://www.googleapis.com/gmail/v1/users/me/messages?q=-label:tinmailed"
 
@@ -72,7 +72,12 @@ class Msg : Printable, JSONDecode {
                 if let h = hdrs {
                     var hdrDict:Dictionary<String,String> = [:]
                     for curHdr:Dictionary<String, String> in h {
-                        hdrDict.updateValue(curHdr["value"]!, forKey: curHdr["name"]!)
+                        curHdr["value"] >>= { v in
+                            curHdr["name"] >>= { n in
+                                hdrDict.updateValue(v, forKey:n)
+                            }
+                        }
+//                        hdrDict.updateValue(curHdr["value"]!, forKey: curHdr["name"]!)
                     }
                     let subj:String? = hdrDict["Subject"]
                     let from:String? = hdrDict["From"]

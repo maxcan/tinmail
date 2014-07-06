@@ -7,8 +7,8 @@
 //
 
 import UIKit
-import swiftz_ios
-import swiftz_core_ios
+import swiftz
+import swiftz_core
 
 let kKeychainItemName = "OAuth2 Sample: Google+"
 let kMyClientID = "241491780934-na17dn4btvf2m2843cgvic8n6s0l13vc.apps.googleusercontent.com"    // pre-assigned by service
@@ -21,19 +21,29 @@ class GAuthSingleton {
         return GAuthSingleton.sharedInstance.auth
     }
     class var sharedInstance : GAuthSingleton {
-        struct Static {
-            static let instance : GAuthSingleton = GAuthSingleton()
+    struct Static {
+        static let instance : GAuthSingleton = GAuthSingleton()
         }
         return Static.instance
     }
 }
 
 class MsgVC: UIViewController {
-    let msg: Msg
-    let nextMsg: Msg?
-    init(coder:NSCoder, msg:Msg, nextMsg:Msg?) {
-        self.msg = msg
-        self.nextMsg = nextMsg
+    //    msg: Msg
+    @IBOutlet var subjLbl: UILabel
+    @IBOutlet var fromLbl: UILabel
+    func setMsg(msg: Msg) {
+        //self.msg = msg
+        println("about to set subj \(msg.subject) and f \(msg.from)")
+        
+        if (subjLbl == nil && fromLbl == nil) {
+            println("nils")
+            return
+        }
+        subjLbl.text = msg.subject
+        fromLbl.text = msg.from
+    }
+    init(coder: NSCoder) {
         super.init(coder: coder)
     }
 }
@@ -54,9 +64,6 @@ class TinmailVC: UIViewController {
             getUserId()
         }
     }
-//    override func viewDidAppear(animated: Bool) {
-//        println("vDA")
-//    }
     
     func getUserId() {
         if (GAuthSingleton.sharedAuth()?.refreshToken == nil) {
@@ -66,19 +73,27 @@ class TinmailVC: UIViewController {
             let msgListFut = getMsgList(auth)
             func withMl(msgList:Result<MsgList>) -> Future<Result<Msg>> {
                 switch msgList {
-                    case let .Value(ml):
-                        return getMsgDtl(auth, ml().messages[0])
-                    case let .Error(e):
-                        println("ERROR ", e.description)
-                        return Future(exec:gcdExecutionContext, {return .Error(e)})
+                case let .Value(ml):
+                    return getMsgDtl(auth, ml().messages[0])
+                case let .Error(e):
+                    println("ERROR ", e.description)
+                    return Future(exec:gcdExecutionContext, {return .Error(e)})
                 }
             }
-            func withMsg(msg: Result<Msg>) -> Void {
-                switch msg {
-                    case let .Value(msgVal): println(msgVal().description)
-                    case let .Error(e):
-                        println("ERROR ", e.description)
-                        return
+            func withMsg(msgRes: Result<Msg>) -> Void {
+                switch msgRes {
+                case let .Value(msgVal):
+                    let msg = msgVal()
+                    println(msg.description)
+                    let msgVC:Optional<MsgVC> = storyboard.instantiateViewControllerWithIdentifier("MsgVC") as? MsgVC
+                    if let m = msgVC {
+                            MsgView.addSubview(m.view)
+                            m.setMsg(msg)
+                            
+                    }
+                case let .Error(e):
+                    println("ERROR ", e.description)
+                    return
                 }
             }
             let msgFut = msgListFut.flatMap(withMl)
