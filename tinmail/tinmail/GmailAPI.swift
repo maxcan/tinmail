@@ -21,22 +21,22 @@ class MsgRef : Printable, JSONDecode, JSONEncode, JSON {
     }
     var description: String {return "MsgRef: id:\(self.id) threadId:\(self.threadId)"}
     typealias J = MsgRef
-//    class func show(ref: MsgRef) -> String {
-//        return "MsgRef: id:\(ref.id) threadId:\(ref.threadId)"
-//    }
+    //    class func show(ref: MsgRef) -> String {
+    //        return "MsgRef: id:\(ref.id) threadId:\(ref.threadId)"
+    //    }
     func toJSON(x: J) -> JSValue {
         return JSValue.JSObject(["id": JSValue.JSString(x.id), "threadId": JSValue.JSString(x.threadId)])
     }
     class func fromJSON(x: JSValue) -> MsgRef? {
         switch (x) {
-            case let .JSObject(d):
-                let i:String? = d["id"] >>= JString.fromJSON
-                let ti:String? = d["threadId"] >>= JString.fromJSON
-                switch(i, ti) {
-                    case (let .Some(si), let .Some(sti)): return MsgRef(id:si, threadId:sti)
-                    default: return Optional.None
-                }
+        case let .JSObject(d):
+            let i:String? = d["id"] >>= JString.fromJSON
+            let ti:String? = d["threadId"] >>= JString.fromJSON
+            switch(i, ti) {
+            case (let .Some(si), let .Some(sti)): return MsgRef(id:si, threadId:sti)
             default: return Optional.None
+            }
+        default: return Optional.None
         }
     }
 }
@@ -55,24 +55,24 @@ class Msg : Printable, JSONDecode {
         self.deliveredTo = nil
     }
     var description:String {
-        return "msg"
+    return "msg"
     }
     class func create(id: String)(from: String)(threadId: String)(subject: String) -> Msg {
         return Msg(id:id, from: from, threadId: threadId, subject: subject)
     }
     class func fromJSON(x: JSValue) -> Msg? {
         switch (x) {
-            case let .JSObject(d):
-                let i:String? = d["id"] >>= JString.fromJSON
-                let ti:String? = d["threadId"] >>= JString.fromJSON
-                switch(d["payload"]) {
-                    case let .Some(.JSObject(payloadDict)):
-                        let subj:String? = d["Subject"] >>= JString.fromJSON
-                        let from:String? = d["From"] >>= JString.fromJSON
-                        return create <^> i <*> from <*> ti <*> subj
-                    default: return Optional.None
-                }
+        case let .JSObject(d):
+            let i:String? = d["id"] >>= JString.fromJSON
+            let ti:String? = d["threadId"] >>= JString.fromJSON
+            switch(d["payload"]) {
+            case let .Some(.JSObject(payloadDict)):
+                let subj:String? = d["Subject"] >>= JString.fromJSON
+                let from:String? = d["From"] >>= JString.fromJSON
+                return create <^> i <*> from <*> ti <*> subj
             default: return Optional.None
+            }
+        default: return Optional.None
         }
     }
 }
@@ -81,58 +81,67 @@ class MsgList : JSONDecode {
     let messages:MsgRef[]
     init(_ messages:MsgRef[]) { self.messages = messages }
     var description: String {
-        return "MsgList: " + self.messages.description
+    return "MsgList: " + self.messages.description
     }
     class func fromJSON(x: JSValue) -> MsgList? {
         var msgs:MsgRef[]?
         switch (x) {
-            case let .JSObject(dict):
-                msgs = dict["messages"] >>= JArray<MsgRef, MsgRef>.fromJSON
-                if let m = msgs {return MsgList(m)} else { return Optional.None}
-            default: return Optional.None
+        case let .JSObject(dict):
+            msgs = dict["messages"] >>= JArray<MsgRef, MsgRef>.fromJSON
+            if let m = msgs {return MsgList(m)} else { return Optional.None}
+        default: return Optional.None
         }
     }
 }
 
 func getMsgDtl(auth: GTMOAuth2Authentication, msgRef: MsgRef) -> Future<Msg?> {
-   var msgMvar: MVar<Msg?> = MVar()
+    //var msgMvar: MVar<Msg?> = MVar()
+    println("get msg detail start")
     var fetcher:GTMHTTPFetcher =
-        GTMHTTPFetcher(URLString: "https://www.googleapis.com/gmail/v1/users/me/messages/\(msgRef.id)")
-    fetcher.authorizer = auth
+    GTMHTTPFetcher(URLString: "https://www.googleapis.com/gmail/v1/users/me/messages/\(msgRef.id)")
+    //    fetcher.authorizer = auth
+    fetcher.delegateQueue = NSOperationQueue()
+    
     fetcher.shouldFetchInBackground = true
-    let res = fetcher.beginFetchWithCompletionHandler({ s1, s2 in
-        if (s2 != nil) {
-            println("erorr", s2)
-            Future(exec:gcdExecutionContext, { msgMvar.put(nil)})
-            return
-        }
-        if let msg = Msg.fromJSON(JSValue.decode(s1)) {
-            Future(exec:gcdExecutionContext, { msgMvar.put(msg)})
+    var ret: Future<Msg?> = Future(exec: gcdExecutionContext)
+    fetcher.beginFetchWithCompletionHandler() { s1, s2 in
+        
+        var msg:Msg? = nil
+        if (s2 == nil) {
+            if let m = Msg.fromJSON(JSValue.decode(s1)) {
+                msg = m
+            }
         } else {
-            Future(exec:gcdExecutionContext, { msgMvar.put(nil)})
+            println("erorr", s2)
         }
-    })
-    return Future(exec: gcdExecutionContext) {return msgMvar.take()}
+        ret.sig(msg)
+        println("don dtl cb")
+    }
+    return ret
 }
 
 
 func getMsgList(auth:GTMOAuth2Authentication) -> Future<MsgList?> {
-    var msgListMvar: MVar<MsgList?> = MVar()
+    //var msgListMvar: MVar<MsgList?> = MVar()
+    println("getMsgList")
     var fetcher:GTMHTTPFetcher = GTMHTTPFetcher(URLString: kMsgListUrl)
     fetcher.authorizer = auth
     fetcher.shouldFetchInBackground = true
-    let res = fetcher.beginFetchWithCompletionHandler({ s1, s2 in
-        if (s2 != nil) {
-            println("erorr", s2)
-            Future(exec:gcdExecutionContext, { msgListMvar.put(nil)})
-            return
-        }
-        if let msgList = MsgList.fromJSON(JSValue.decode(s1)) {
-            Future(exec:gcdExecutionContext, { msgListMvar.put(msgList)})
+    fetcher.delegateQueue = NSOperationQueue()
+    var ret: Future<MsgList?> = Future(exec: gcdExecutionContext)
+    fetcher.beginFetchWithCompletionHandler() { s1, s2 in
+        var msgList:MsgList? = nil
+        if (s2 == nil) {
+            if let m = MsgList.fromJSON(JSValue.decode(s1)) {
+                msgList = m
+            }
         } else {
-            Future(exec:gcdExecutionContext, { msgListMvar.put(nil)})
+            println("erorr", s2)
         }
-    })
-    return Future(exec: gcdExecutionContext) {return msgListMvar.take()}
+        ret.sig(msgList)
+        //Future(exec:gcdExecutionContext) { ret.sig(msgList) }
+        println("don list cb")
+    }
+    return ret
 }
 

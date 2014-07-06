@@ -26,6 +26,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		5065268A1968DB7B00F2E3C4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 507A4A6C1967722B00F02E30 /* swiftz_core.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 506A61CD1967692800994ADB;
+			remoteInfo = swiftz_core_ios;
+		};
+		5065268C1968DB7B00F2E3C4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 506A625F196771B800994ADB /* swiftz.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 506A621119676A8200994ADB;
+			remoteInfo = swiftz_ios;
+		};
 		506A6267196771B800994ADB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 506A625F196771B800994ADB /* swiftz.xcodeproj */;
@@ -54,13 +68,6 @@
 			remoteGlobalIDString = 506A621C19676A8200994ADB;
 			remoteInfo = swiftz_iosTests;
 		};
-		506A6281196771FB00994ADB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 506A625F196771B800994ADB /* swiftz.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 506A621119676A8200994ADB;
-			remoteInfo = swiftz_ios;
-		};
 		507A4A761967722B00F02E30 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 507A4A6C1967722B00F02E30 /* swiftz_core.xcodeproj */;
@@ -88,13 +95,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 506A61D81967692800994ADB;
 			remoteInfo = swiftz_core_iosTests;
-		};
-		507A4A7E1967725500F02E30 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 507A4A6C1967722B00F02E30 /* swiftz_core.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 506A61CD1967692800994ADB;
-			remoteInfo = swiftz_core_ios;
 		};
 		50EEAF89195BB6940014A2CA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -285,8 +285,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				507A4A7F1967725500F02E30 /* PBXTargetDependency */,
-				506A6282196771FB00994ADB /* PBXTargetDependency */,
+				5065268B1968DB7B00F2E3C4 /* PBXTargetDependency */,
+				5065268D1968DB7B00F2E3C4 /* PBXTargetDependency */,
 			);
 			name = tinmail;
 			productName = tinmail;
@@ -466,15 +466,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		506A6282196771FB00994ADB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = swiftz_ios;
-			targetProxy = 506A6281196771FB00994ADB /* PBXContainerItemProxy */;
-		};
-		507A4A7F1967725500F02E30 /* PBXTargetDependency */ = {
+		5065268B1968DB7B00F2E3C4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = swiftz_core_ios;
-			targetProxy = 507A4A7E1967725500F02E30 /* PBXContainerItemProxy */;
+			targetProxy = 5065268A1968DB7B00F2E3C4 /* PBXContainerItemProxy */;
+		};
+		5065268D1968DB7B00F2E3C4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = swiftz_ios;
+			targetProxy = 5065268C1968DB7B00F2E3C4 /* PBXContainerItemProxy */;
 		};
 		50EEAF8A195BB6940014A2CA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

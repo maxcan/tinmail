@@ -8,6 +8,7 @@
 
 import UIKit
 import swiftz_ios
+import swiftz_core_ios
 
 let kKeychainItemName = "OAuth2 Sample: Google+"
 let kMyClientID = "241491780934-na17dn4btvf2m2843cgvic8n6s0l13vc.apps.googleusercontent.com"    // pre-assigned by service
@@ -27,9 +28,19 @@ class GAuthSingleton {
     }
 }
 
+class MsgVC: UIViewController {
+    let msg: Msg
+    let nextMsg: Msg?
+    init(coder:NSCoder, msg:Msg, nextMsg:Msg?) {
+        self.msg = msg
+        self.nextMsg = nextMsg
+        super.init(coder: coder)
+    }
+}
 
 class TinmailVC: UIViewController {
     
+    @IBOutlet var MsgView: UIView
     override func viewDidLoad() {
         super.viewDidLoad()
         println(GAuthSingleton.sharedAuth()?.refreshToken)
@@ -47,40 +58,39 @@ class TinmailVC: UIViewController {
     override func viewDidAppear(animated: Bool) {
         println("vDA")
     }
+    
     func getUserId() {
-        println("getUserId")
         if (GAuthSingleton.sharedAuth()?.refreshToken == nil) {
             println("authsingleton reftoken is null")
         }
         if let auth = GAuthSingleton.sharedAuth() {
             let msgListFut = getMsgList(auth)
-//            let _:Future<()> = msgListFut.map { msgList in
-//                println("msgslist:  " + msgList.description)
-//                if let mg = msgList {
-//                    println(mg.description)
-//                    let msgFut = getMsgDtl(auth, mg.messages[0])
-//                    println("getting messages")
-//                    msgFut.map { msgDtl in
-//                        println("we have  amsg: " + msgDtl.description)
-//                    }
-//                }
-//                
-//            }
-//            return
-            println("we have a msglist fut")
-            let _:Future<()> = Future(exec:gcdExecutionContext, "getList") {
-                let msgList = msgListFut.result()
+            func withMl(msgList:MsgList?) -> Future<Msg?> {
                 if let mg = msgList {
-                    println(mg.description)
-                    let msgFut = getMsgDtl(auth, mg.messages[0])
-                    //let _:Future<()> = Future(exec:gcdExecutionContext, "getdtl") {
-                        println("msg detail: about to fetch")
-                        let dtl = msgFut.result()
-                        println("msg detail: " + dtl.description)
-                    //}
+                    
+                    println(mg.description.substringToIndex(100))
+                    return getMsgDtl(auth, mg.messages[0])
                 }
+                let n:Msg? = nil
+                return Future(exec:gcdExecutionContext, {return nil})
             }
-            println("done")
+            func withMsg(msg: Msg?) -> Void {
+                println("with msg")
+                if let mg = msg {
+                    println(mg.description)
+                } else {
+                    println("no msg")
+                }
+               // return Future(exec:gcdExecutionContext, {return })
+            }
+            println("got msg fut")
+            let msgFut = msgListFut.flatMap(withMl)
+            msgFut.map(withMsg)
+            //msgListFut.result()
+            println("got msg res")
+            //let _ = msgFut.map(withMsg)
+//            msgFut.result()
+            return
         }
     }
 }
