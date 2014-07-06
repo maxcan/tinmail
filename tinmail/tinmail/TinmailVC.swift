@@ -51,13 +51,12 @@ class TinmailVC: UIViewController {
         if GAuthSingleton.sharedAuth()?.refreshToken == nil {
             self.performSegueWithIdentifier("showLogin", sender:self)
         } else {
-        println("have ref token")
             getUserId()
         }
     }
-    override func viewDidAppear(animated: Bool) {
-        println("vDA")
-    }
+//    override func viewDidAppear(animated: Bool) {
+//        println("vDA")
+//    }
     
     func getUserId() {
         if (GAuthSingleton.sharedAuth()?.refreshToken == nil) {
@@ -65,31 +64,25 @@ class TinmailVC: UIViewController {
         }
         if let auth = GAuthSingleton.sharedAuth() {
             let msgListFut = getMsgList(auth)
-            func withMl(msgList:MsgList?) -> Future<Msg?> {
-                if let mg = msgList {
-                    
-                    println(mg.description.substringToIndex(100))
-                    return getMsgDtl(auth, mg.messages[0])
+            func withMl(msgList:Result<MsgList>) -> Future<Result<Msg>> {
+                switch msgList {
+                    case let .Value(ml):
+                        return getMsgDtl(auth, ml().messages[0])
+                    case let .Error(e):
+                        println("ERROR ", e.description)
+                        return Future(exec:gcdExecutionContext, {return .Error(e)})
                 }
-                let n:Msg? = nil
-                return Future(exec:gcdExecutionContext, {return nil})
             }
-            func withMsg(msg: Msg?) -> Void {
-                println("with msg")
-                if let mg = msg {
-                    println(mg.description)
-                } else {
-                    println("no msg")
+            func withMsg(msg: Result<Msg>) -> Void {
+                switch msg {
+                    case let .Value(msgVal): println(msgVal().description)
+                    case let .Error(e):
+                        println("ERROR ", e.description)
+                        return
                 }
-               // return Future(exec:gcdExecutionContext, {return })
             }
-            println("got msg fut")
             let msgFut = msgListFut.flatMap(withMl)
             msgFut.map(withMsg)
-            //msgListFut.result()
-            println("got msg res")
-            //let _ = msgFut.map(withMsg)
-//            msgFut.result()
             return
         }
     }

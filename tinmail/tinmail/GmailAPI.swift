@@ -55,7 +55,7 @@ class Msg : Printable, JSONDecode {
         self.deliveredTo = nil
     }
     var description:String {
-    return "msg"
+        return "Msg: id:\(id) threadId:\(threadId) from:\(from) subject:\(subject)"
     }
     class func create(id: String)(from: String)(threadId: String)(subject: String) -> Msg {
         return Msg(id:id, from: from, threadId: threadId, subject: subject)
@@ -65,15 +65,26 @@ class Msg : Printable, JSONDecode {
         case let .JSObject(d):
             let i:String? = d["id"] >>= JString.fromJSON
             let ti:String? = d["threadId"] >>= JString.fromJSON
+            println("i: \(i) ti: \(ti)")
             switch(d["payload"]) {
             case let .Some(.JSObject(payloadDict)):
-                let subj:String? = d["Subject"] >>= JString.fromJSON
-                let from:String? = d["From"] >>= JString.fromJSON
-                return create <^> i <*> from <*> ti <*> subj
+                let hdrs:Dictionary<String,String>[]? = payloadDict["headers"] >>= JArray<Dictionary<String, String>,JDictionary<String, JString>>.fromJSON
+                if let h = hdrs {
+                    var hdrDict:Dictionary<String,String> = [:]
+                    for curHdr:Dictionary<String, String> in h {
+                        hdrDict.updateValue(curHdr["value"]!, forKey: curHdr["name"]!)
+                    }
+                    let subj:String? = hdrDict["Subject"]
+                    let from:String? = hdrDict["From"]
+                    //println("hdrDict: \(hdrDict) subj: \(subj) from: \(from)")
+                    return create <^> i <*> from <*> ti <*> subj
+                }
             default: return Optional.None
             }
         default: return Optional.None
         }
+        return Optional.None
+        
     }
 }
 
@@ -94,53 +105,46 @@ class MsgList : JSONDecode {
     }
 }
 
-func getMsgDtl(auth: GTMOAuth2Authentication, msgRef: MsgRef) -> Future<Msg?> {
-    //var msgMvar: MVar<Msg?> = MVar()
-    println("get msg detail start")
+func getMsgDtl(auth: GTMOAuth2Authentication, msgRef: MsgRef) -> Future<Result<Msg>> {
     var fetcher:GTMHTTPFetcher =
-    GTMHTTPFetcher(URLString: "https://www.googleapis.com/gmail/v1/users/me/messages/\(msgRef.id)")
-    //    fetcher.authorizer = auth
+    GTMHTTPFetcher(URLString: "https://www.googleapis.com/gmail/v1/users/me/messages/\(msgRef.id)?format=full")
+    fetcher.authorizer = auth
     fetcher.delegateQueue = NSOperationQueue()
-    
     fetcher.shouldFetchInBackground = true
-    var ret: Future<Msg?> = Future(exec: gcdExecutionContext)
+    var ret: Future<Result<Msg>> = Future(exec: gcdExecutionContext)
     fetcher.beginFetchWithCompletionHandler() { s1, s2 in
-        
-        var msg:Msg? = nil
         if (s2 == nil) {
-            if let m = Msg.fromJSON(JSValue.decode(s1)) {
-                msg = m
+            let jsVal = JSValue.decode(s1)
+            if let m = Msg.fromJSON(jsVal) {
+                ret.sig(Result.Value(m))
+            } else {
+                ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
             }
         } else {
-            println("erorr", s2)
+            ret.sig(Result.Error(s2))
         }
-        ret.sig(msg)
-        println("don dtl cb")
     }
     return ret
 }
 
 
-func getMsgList(auth:GTMOAuth2Authentication) -> Future<MsgList?> {
-    //var msgListMvar: MVar<MsgList?> = MVar()
-    println("getMsgList")
+func getMsgList(auth:GTMOAuth2Authentication) -> Future<Result<MsgList>> {
     var fetcher:GTMHTTPFetcher = GTMHTTPFetcher(URLString: kMsgListUrl)
     fetcher.authorizer = auth
     fetcher.shouldFetchInBackground = true
     fetcher.delegateQueue = NSOperationQueue()
-    var ret: Future<MsgList?> = Future(exec: gcdExecutionContext)
+    var ret: Future<Result<MsgList>> = Future(exec: gcdExecutionContext)
     fetcher.beginFetchWithCompletionHandler() { s1, s2 in
-        var msgList:MsgList? = nil
         if (s2 == nil) {
-            if let m = MsgList.fromJSON(JSValue.decode(s1)) {
-                msgList = m
+            let jsVal = JSValue.decode(s1)
+            if let m = MsgList.fromJSON(jsVal) {
+                ret.sig(Result.Value(m))
+            } else {
+                ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
             }
         } else {
-            println("erorr", s2)
+            ret.sig(Result.Error(s2))
         }
-        ret.sig(msgList)
-        //Future(exec:gcdExecutionContext) { ret.sig(msgList) }
-        println("don list cb")
     }
     return ret
 }
