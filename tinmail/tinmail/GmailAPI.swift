@@ -68,7 +68,7 @@ class Msg : Printable, JSONDecode {
             println("i: \(i) ti: \(ti)")
             switch(d["payload"]) {
             case let .Some(.JSObject(payloadDict)):
-                let hdrs:Dictionary<String,String>[]? = payloadDict["headers"] >>= JArray<Dictionary<String, String>,JDictionary<String, JString>>.fromJSON
+                let hdrs:[Dictionary<String,String>]? = payloadDict["headers"] >>= JArray<Dictionary<String, String>,JDictionary<String, JString>>.fromJSON
                 if let h = hdrs {
                     var hdrDict:Dictionary<String,String> = [:]
                     for curHdr:Dictionary<String, String> in h {
@@ -94,13 +94,13 @@ class Msg : Printable, JSONDecode {
 }
 
 class MsgList : JSONDecode {
-    let messages:MsgRef[]
-    init(_ messages:MsgRef[]) { self.messages = messages }
+    let messages:[MsgRef]
+    init(_ messages:[MsgRef]) { self.messages = messages }
     var description: String {
     return "MsgList: " + self.messages.description
     }
     class func fromJSON(x: JSValue) -> MsgList? {
-        var msgs:MsgRef[]?
+        var msgs:[MsgRef]?
         switch (x) {
         case let .JSObject(dict):
             msgs = dict["messages"] >>= JArray<MsgRef, MsgRef>.fromJSON
