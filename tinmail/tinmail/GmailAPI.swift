@@ -121,7 +121,7 @@ func getMsgDtl(auth: GTMOAuth2Authentication, msgRef: MsgRef) -> Future<Result<M
         if (s2 == nil) {
             let jsVal = JSValue.decode(s1)
             if let m = Msg.fromJSON(jsVal) {
-                ret.sig(Result.Value(m))
+                ret.sig(Result.Value(Box(m)))
             } else {
                 ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
             }
@@ -143,7 +143,7 @@ func getMsgList(auth:GTMOAuth2Authentication) -> Future<Result<MsgList>> {
         if (s2 == nil) {
             let jsVal = JSValue.decode(s1)
             if let m = MsgList.fromJSON(jsVal) {
-                ret.sig(Result.Value(m))
+                ret.sig(Result.Value(Box(m)))
             } else {
                 ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
             }

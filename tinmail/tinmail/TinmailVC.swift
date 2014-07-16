@@ -74,7 +74,7 @@ class TinmailVC: UIViewController {
             func withMl(msgList:Result<MsgList>) -> Future<Result<Msg>> {
                 switch msgList {
                 case let .Value(ml):
-                    return getMsgDtl(auth, ml().messages[0])
+                    return getMsgDtl(auth, ml.value.messages[0])
                 case let .Error(e):
                     println("ERROR ", e.description)
                     return Future(exec:gcdExecutionContext, {return .Error(e)})
@@ -83,12 +83,12 @@ class TinmailVC: UIViewController {
             func withMsg(msgRes: Result<Msg>) -> Void {
                 switch msgRes {
                 case let .Value(msgVal):
-                    let msg = msgVal()
-                    println(msg.description)
+                    let msg = msgVal
+                    println(msg.value.description)
                     let msgVC:Optional<MsgVC> = storyboard.instantiateViewControllerWithIdentifier("MsgVC") as? MsgVC
                     if let m = msgVC {
                             MsgView.addSubview(m.view)
-                            m.setMsg(msg)
+                            m.setMsg(msg.value)
                             
                     }
                 case let .Error(e):
