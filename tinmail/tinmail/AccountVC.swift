@@ -29,7 +29,7 @@ class AccountVC: UIViewController {
         if err != nil {
             println("error:", err)
         } else {
-            println("success")
+            println("success, popping to root vc")
             GAuthSingleton.sharedInstance.auth = auth
             self.navigationController.popToRootViewControllerAnimated(true)
         }

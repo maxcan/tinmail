@@ -10,7 +10,7 @@ import UIKit
 import swiftz
 import swiftz_core
 
-let kKeychainItemName = "OAuth2 Sample: Google+"
+let kKeychainItemName = "tinmail google+ oauth"
 let kMyClientID = "241491780934-na17dn4btvf2m2843cgvic8n6s0l13vc.apps.googleusercontent.com"    // pre-assigned by service
 let kMyClientSecret = "mWx1B6A9RonGSIxI6m21itn9" // pre-assigned by service
 // var gAuth:GTMOAuth2Authentication? = nil
@@ -21,8 +21,8 @@ class GAuthSingleton {
         return GAuthSingleton.sharedInstance.auth
     }
     class var sharedInstance : GAuthSingleton {
-    struct Static {
-        static let instance : GAuthSingleton = GAuthSingleton()
+        struct Static {
+            static let instance : GAuthSingleton = GAuthSingleton()
         }
         return Static.instance
     }
@@ -57,7 +57,9 @@ class TinmailVC: UIViewController {
         GAuthSingleton.sharedInstance.auth = GTMOAuth2ViewControllerTouch.authForGoogleFromKeychainForName(kKeychainItemName,
             clientID:kMyClientID,
             clientSecret:kMyClientSecret)
-        println(GAuthSingleton.sharedAuth()?.refreshToken)
+//        NSLog("refresh tokey: ", GAuthSingleton.sharedAuth()?.refreshToken)
+        println("shared auth")
+        println(GAuthSingleton.sharedAuth())
         if GAuthSingleton.sharedAuth()?.refreshToken == nil {
             self.performSegueWithIdentifier("showLogin", sender:self)
         } else {
@@ -65,6 +67,14 @@ class TinmailVC: UIViewController {
         }
     }
     
+    override func viewDidAppear(animated: Bool) {
+        println("view did appear")
+        if GAuthSingleton.sharedAuth()?.refreshToken == nil {
+            self.performSegueWithIdentifier("showLogin", sender:self)
+        } else {
+            getUserId()
+        }
+    }
     func getUserId() {
         if (GAuthSingleton.sharedAuth()?.refreshToken == nil) {
             println("authsingleton reftoken is null")
