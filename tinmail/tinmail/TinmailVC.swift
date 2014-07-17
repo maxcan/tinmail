@@ -81,6 +81,7 @@ class TinmailVC: UIViewController {
         }
         if let auth = GAuthSingleton.sharedAuth() {
             let msgListFut = getMsgList(auth)
+            let labels = getLabelList(auth)
             func withMl(msgList:Result<MsgList>) -> Future<Result<Msg>> {
                 switch msgList {
                 case let .Value(ml):
@@ -108,6 +109,15 @@ class TinmailVC: UIViewController {
             }
             let msgFut = msgListFut.flatMap(withMl)
             msgFut.map(withMsg)
+            labels.map({res -> Void in
+                println("labels cv:")
+                switch(res) {
+                    case let .Value(lbls):
+                        println("labelS:")
+                        println(lbls)
+                        return
+                    default: return
+            }})
             return
         }
     }

@@ -41,6 +41,76 @@ class MsgRef : Printable, JSONDecode, JSONEncode, JSON {
     }
 }
 
+enum LabelType: JSONDecode {
+    case User
+    case System
+    static func fromJSON(x: JSValue) -> LabelType? {
+        switch(x) {
+            case .JSString("user"): return User
+            case .JSString("system"): return System
+            default: return nil
+        }
+    }
+}
+enum LabelMessageListVisibility:JSONDecode {
+    case Hide
+    case Show
+    static func fromJSON(x: JSValue) -> LabelMessageListVisibility? {
+        switch(x) {
+            case .JSString("hide"): return Hide
+            case .JSString("show"): return Show
+            default: return nil
+        }
+    }
+}
+enum LabelListVisibility: JSONDecode {
+    case LabelHide
+    case LabelShow
+    case LabelShowIfUnread
+    static func fromJSON(x: JSValue) -> LabelListVisibility? {
+        switch(x) {
+            case .JSString("labelHide"): return LabelHide
+            case .JSString("labelShow"): return LabelShow
+            case .JSString("labelShowIfUnread"): return LabelShowIfUnread
+            default: return nil
+        }
+    }
+}
+
+class Label:JSONDecode, JSONEncode, JSON {
+    let id: String
+    let name: String
+    let type: LabelType
+    let messageListVisibility: LabelMessageListVisibility?
+    let labelListVisibility: LabelListVisibility?
+    func toJSON(x: J) -> JSValue {
+        return JSValue.JSNull()
+    }
+    typealias J = Label
+    init(_ id: String, _ name: String, _ type: LabelType, _ messageListVisibility: LabelMessageListVisibility?, _ labelListVisibility:LabelListVisibility? ) {
+        self.id = id
+        self.type = type
+        self.name = name
+        self.messageListVisibility = messageListVisibility
+        self.labelListVisibility = labelListVisibility
+    }
+    class func create(id: String)(name: String)(type: LabelType)(mlv: LabelMessageListVisibility)(llv:LabelListVisibility) -> Label {
+        return Label(id, name, type, mlv, llv)
+    }
+    class func fromJSON(x: JSValue) -> Label? {
+        switch (x) {
+        case let .JSObject(d):
+            let i:String? = d["id"] >>= JString.fromJSON
+            let n:String? = d["name"] >>= JString.fromJSON
+            let mlv:LabelMessageListVisibility? = d["messageListVisibility"] >>= LabelMessageListVisibility.fromJSON
+            let llv:LabelListVisibility? = d["labelListVisibility"] >>= LabelListVisibility.fromJSON
+            let tp:LabelType? = d["type"] >>= LabelType.fromJSON
+            return create <^> i <*> n <*> tp <*> mlv <*> llv
+        default: return Optional.None
+        }
+    }
+}
+
 class Msg : Printable, JSONDecode {
     let id: String
     let from: String
@@ -89,7 +159,6 @@ class Msg : Printable, JSONDecode {
         default: return Optional.None
         }
         return Optional.None
-        
     }
 }
 
@@ -97,7 +166,7 @@ class MsgList : JSONDecode {
     let messages:[MsgRef]
     init(_ messages:[MsgRef]) { self.messages = messages }
     var description: String {
-    return "MsgList: " + self.messages.description
+        return "MsgList: " + self.messages.description
     }
     class func fromJSON(x: JSValue) -> MsgList? {
         var msgs:[MsgRef]?
@@ -109,6 +178,31 @@ class MsgList : JSONDecode {
         }
     }
 }
+
+func getLabelList(auth: GTMOAuth2Authentication) -> Future<Result<[Label]>> {
+    var fetcher:GTMHTTPFetcher =
+    GTMHTTPFetcher(URLString: "https://www.googleapis.com/gmail/v1/users/me/labels")
+    fetcher.authorizer = auth
+    fetcher.delegateQueue = NSOperationQueue()
+    fetcher.shouldFetchInBackground = true
+    var ret: Future<Result<[Label]>> = Future(exec: gcdExecutionContext)
+    println("get label alist, about to run fetch")
+    fetcher.beginFetchWithCompletionHandler() { s1, s2 in
+        if (s2 == nil) {
+            println("label list, no error")
+            let jsVal = JSValue.decode(s1)
+            if let m = JArray<Label, Label>.fromJSON(jsVal) {
+                ret.sig(Result.Value(Box(m)))
+            } else {
+                ret.sig(Result.Error(NSError.errorWithDomain("LabelListParse", code: 1, userInfo:nil)))
+            }
+        } else {
+            ret.sig(Result.Error(s2))
+        }
+    }
+    return ret
+}
+
 
 func getMsgDtl(auth: GTMOAuth2Authentication, msgRef: MsgRef) -> Future<Result<Msg>> {
     var fetcher:GTMHTTPFetcher =
@@ -131,7 +225,6 @@ func getMsgDtl(auth: GTMOAuth2Authentication, msgRef: MsgRef) -> Future<Result<M
     }
     return ret
 }
-
 
 func getMsgList(auth:GTMOAuth2Authentication) -> Future<Result<MsgList>> {
     var fetcher:GTMHTTPFetcher = GTMHTTPFetcher(URLString: kMsgListUrl)
