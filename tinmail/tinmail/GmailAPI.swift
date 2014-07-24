@@ -46,9 +46,9 @@ enum LabelType: JSONDecode {
     case System
     static func fromJSON(x: JSValue) -> LabelType? {
         switch(x) {
-            case .JSString("user"): return User
-            case .JSString("system"): return System
-            default: return nil
+        case .JSString("user"): return User
+        case .JSString("system"): return System
+        default: return nil
         }
     }
 }
@@ -57,9 +57,9 @@ enum LabelMessageListVisibility:JSONDecode {
     case Show
     static func fromJSON(x: JSValue) -> LabelMessageListVisibility? {
         switch(x) {
-            case .JSString("hide"): return Hide
-            case .JSString("show"): return Show
-            default: return nil
+        case .JSString("hide"): return Hide
+        case .JSString("show"): return Show
+        default: return nil
         }
     }
 }
@@ -69,10 +69,10 @@ enum LabelListVisibility: JSONDecode {
     case LabelShowIfUnread
     static func fromJSON(x: JSValue) -> LabelListVisibility? {
         switch(x) {
-            case .JSString("labelHide"): return LabelHide
-            case .JSString("labelShow"): return LabelShow
-            case .JSString("labelShowIfUnread"): return LabelShowIfUnread
-            default: return nil
+        case .JSString("labelHide"): return LabelHide
+        case .JSString("labelShow"): return LabelShow
+        case .JSString("labelShowIfUnread"): return LabelShowIfUnread
+        default: return nil
         }
     }
 }
@@ -125,7 +125,7 @@ class Msg : Printable, JSONDecode {
         self.deliveredTo = nil
     }
     var description:String {
-        return "Msg: id:\(id) threadId:\(threadId) from:\(from) subject:\(subject)"
+    return "Msg: id:\(id) threadId:\(threadId) from:\(from) subject:\(subject)"
     }
     class func create(id: String)(from: String)(threadId: String)(subject: String) -> Msg {
         return Msg(id:id, from: from, threadId: threadId, subject: subject)
@@ -147,7 +147,7 @@ class Msg : Printable, JSONDecode {
                                 hdrDict.updateValue(v, forKey:n)
                             }
                         }
-//                        hdrDict.updateValue(curHdr["value"]!, forKey: curHdr["name"]!)
+                        //                        hdrDict.updateValue(curHdr["value"]!, forKey: curHdr["name"]!)
                     }
                     let subj:String? = hdrDict["Subject"]
                     let from:String? = hdrDict["From"]
@@ -166,7 +166,7 @@ class MsgList : JSONDecode {
     let messages:[MsgRef]
     init(_ messages:[MsgRef]) { self.messages = messages }
     var description: String {
-        return "MsgList: " + self.messages.description
+    return "MsgList: " + self.messages.description
     }
     class func fromJSON(x: JSValue) -> MsgList? {
         var msgs:[MsgRef]?
@@ -190,11 +190,14 @@ func getLabelList(auth: GTMOAuth2Authentication) -> Future<Result<[Label]>> {
     fetcher.beginFetchWithCompletionHandler() { s1, s2 in
         if (s2 == nil) {
             println("label list, no error")
-            let jsVal = JSValue.decode(s1)
-            if let m = JArray<Label, Label>.fromJSON(jsVal) {
-                ret.sig(Result.Value(Box(m)))
-            } else {
-                ret.sig(Result.Error(NSError.errorWithDomain("LabelListParse", code: 1, userInfo:nil)))
+            //let jsVal = JSValue.decode(s1)
+            JSValue.decode(s1).map {(jsVal:JSValue) -> Void in
+                if let m = JArray<Label, Label>.fromJSON(jsVal) {
+                    ret.sig(Result.Value(Box(m)))
+                } else {
+                    ret.sig(Result.Error(NSError.errorWithDomain("LabelListParse", code: 1, userInfo:nil)))
+                }
+                return
             }
         } else {
             ret.sig(Result.Error(s2))
@@ -203,6 +206,26 @@ func getLabelList(auth: GTMOAuth2Authentication) -> Future<Result<[Label]>> {
     return ret
 }
 
+func decodeRes<A:JSONDecode>(ret: Future<Result<A>>) -> ((s1:NSData?, s2:NSError?) -> Void) {
+    return {s1, s2 in
+        switch s2 {
+        case .None:
+            if let s1 = s1 {
+//            JSValue.decode(s1).flatMap(Msg.fromJSON).maybe(
+//                   ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
+//                , { m in ret.sig(Result.Value(Box(m))) })
+                JSValue.decode(s1).map {(jsVal:JSValue) -> Void in
+                    if let m:A.J = A.fromJSON(jsVal) {
+                        ret.sig(Result.Value(Box(m as A)))
+                    } else {
+                        ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
+                    }
+                }
+            }
+        case let .Some(s2): ret.sig(Result.Error(s2))
+        }
+    }
+}
 
 func getMsgDtl(auth: GTMOAuth2Authentication, msgRef: MsgRef) -> Future<Result<Msg>> {
     var fetcher:GTMHTTPFetcher =
@@ -211,18 +234,22 @@ func getMsgDtl(auth: GTMOAuth2Authentication, msgRef: MsgRef) -> Future<Result<M
     fetcher.delegateQueue = NSOperationQueue()
     fetcher.shouldFetchInBackground = true
     var ret: Future<Result<Msg>> = Future(exec: gcdExecutionContext)
-    fetcher.beginFetchWithCompletionHandler() { s1, s2 in
-        if (s2 == nil) {
-            let jsVal = JSValue.decode(s1)
-            if let m = Msg.fromJSON(jsVal) {
-                ret.sig(Result.Value(Box(m)))
-            } else {
-                ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
-            }
-        } else {
-            ret.sig(Result.Error(s2))
-        }
-    }
+    fetcher.beginFetchWithCompletionHandler(decodeRes(ret))
+//    fetcher.beginFetchWithCompletionHandler() { s1, s2 in
+//        if (s2 == nil) {
+//            JSValue.decode(s1).map {(jsVal:JSValue) -> Void in
+//                if let m = Msg.fromJSON(jsVal) {
+//                    ret.sig(Result.Value(Box(m)))
+//                } else {
+//                    ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
+//                }
+//            }
+//
+//            //the code below is more elegant but breaks the linker now
+//        } else {
+//            ret.sig(Result.Error(s2))
+//        }
+//    }
     return ret
 }
 
@@ -234,11 +261,12 @@ func getMsgList(auth:GTMOAuth2Authentication) -> Future<Result<MsgList>> {
     var ret: Future<Result<MsgList>> = Future(exec: gcdExecutionContext)
     fetcher.beginFetchWithCompletionHandler() { s1, s2 in
         if (s2 == nil) {
-            let jsVal = JSValue.decode(s1)
-            if let m = MsgList.fromJSON(jsVal) {
-                ret.sig(Result.Value(Box(m)))
-            } else {
-                ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
+            JSValue.decode(s1).map {(jsVal:JSValue) -> Void in
+                if let m = MsgList.fromJSON(jsVal) {
+                    ret.sig(Result.Value(Box(m)))
+                } else {
+                    ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
+                }
             }
         } else {
             ret.sig(Result.Error(s2))

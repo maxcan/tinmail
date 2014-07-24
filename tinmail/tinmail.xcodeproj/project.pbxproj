@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		501DCBB7196515A100AA1C5C /* GmailAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501DCBB6196515A100AA1C5C /* GmailAPI.swift */; };
 		504F55AA1960E78E00353D32 /* GTMOAuth2ViewTouch.xib in Sources */ = {isa = PBXBuildFile; fileRef = 50F4368F1960D3DA000C4404 /* GTMOAuth2ViewTouch.xib */; };
+		5051ADDE1980AFB800992EAD /* swiftz_core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5047D28019690BB100667EED /* swiftz_core.framework */; };
+		5051ADDF1980AFB800992EAD /* swiftz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5047D27419690BB100667EED /* swiftz.framework */; };
 		50E327C91963CCA6005DF2CE /* AccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E327C81963CCA6005DF2CE /* AccountVC.swift */; };
 		50EEAF79195BB6940014A2CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF78195BB6940014A2CA /* AppDelegate.swift */; };
 		50EEAF7C195BB6940014A2CA /* tinmail.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF7A195BB6940014A2CA /* tinmail.xcdatamodeld */; };
@@ -82,14 +84,14 @@
 			remoteGlobalIDString = 598539E81967F95B00A3158C;
 			remoteInfo = swiftz_core_iosTests;
 		};
-		5047D28719690BB900667EED /* PBXContainerItemProxy */ = {
+		5051ADE41980B08900992EAD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5047D26919690BB100667EED /* swiftz.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 598539FF1967F99500A3158C;
 			remoteInfo = swiftz_ios;
 		};
-		5047D28919690BB900667EED /* PBXContainerItemProxy */ = {
+		5051ADE91980B08F00992EAD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5047D26C19690BB100667EED /* swiftz_core.xcodeproj */;
 			proxyType = 1;
@@ -104,18 +106,6 @@
 			remoteInfo = tinmail;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		502FAC7C19652CB100B7C7D1 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		501DCBB6196515A100AA1C5C /* GmailAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GmailAPI.swift; sourceTree = "<group>"; };
@@ -152,6 +142,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5051ADDE1980AFB800992EAD /* swiftz_core.framework in Frameworks */,
+				5051ADDF1980AFB800992EAD /* swiftz.framework in Frameworks */,
 				50F4745F1960C6CF00758C39 /* SystemConfiguration.framework in Frameworks */,
 				50F4745D1960C6C600758C39 /* Security.framework in Frameworks */,
 			);
@@ -277,7 +269,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 50EEAF92195BB6940014A2CA /* Build configuration list for PBXNativeTarget "tinmail" */;
 			buildPhases = (
-				502FAC7C19652CB100B7C7D1 /* CopyFiles */,
 				50EEAF6F195BB6940014A2CA /* Sources */,
 				50EEAF70195BB6940014A2CA /* Frameworks */,
 				50EEAF71195BB6940014A2CA /* Resources */,
@@ -285,8 +276,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				5047D28819690BB900667EED /* PBXTargetDependency */,
-				5047D28A19690BB900667EED /* PBXTargetDependency */,
+				5051ADE51980B08900992EAD /* PBXTargetDependency */,
+				5051ADEA1980B08F00992EAD /* PBXTargetDependency */,
 			);
 			name = tinmail;
 			productName = tinmail;
@@ -466,15 +457,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		5047D28819690BB900667EED /* PBXTargetDependency */ = {
+		5051ADE51980B08900992EAD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = swiftz_ios;
-			targetProxy = 5047D28719690BB900667EED /* PBXContainerItemProxy */;
+			targetProxy = 5051ADE41980B08900992EAD /* PBXContainerItemProxy */;
 		};
-		5047D28A19690BB900667EED /* PBXTargetDependency */ = {
+		5051ADEA1980B08F00992EAD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = swiftz_core_ios;
-			targetProxy = 5047D28919690BB900667EED /* PBXContainerItemProxy */;
+			targetProxy = 5051ADE91980B08F00992EAD /* PBXContainerItemProxy */;
 		};
 		50EEAF8A195BB6940014A2CA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

@@ -15,6 +15,10 @@ let kMyClientID = "241491780934-na17dn4btvf2m2843cgvic8n6s0l13vc.apps.googleuser
 let kMyClientSecret = "mWx1B6A9RonGSIxI6m21itn9" // pre-assigned by service
 // var gAuth:GTMOAuth2Authentication? = nil
 
+// save some keystrokes
+func onMainThread(f:(() -> Void)) -> Void {
+    dispatch_async(dispatch_get_main_queue(), f)
+}
 class GAuthSingleton {
     var auth: GTMOAuth2Authentication?
     class func sharedAuth() -> GTMOAuth2Authentication? {
@@ -30,8 +34,8 @@ class GAuthSingleton {
 
 class MsgVC: UIViewController {
     //    msg: Msg
-    @IBOutlet var subjLbl: UILabel
-    @IBOutlet var fromLbl: UILabel
+    @IBOutlet var subjLbl: UILabel?
+    @IBOutlet var fromLbl: UILabel?
     func setMsg(msg: Msg) {
         //self.msg = msg
         println("about to set subj \(msg.subject) and f \(msg.from)")
@@ -40,8 +44,8 @@ class MsgVC: UIViewController {
             println("nils")
             return
         }
-        subjLbl.text = msg.subject
-        fromLbl.text = msg.from
+        if let s = subjLbl { s.text = msg.subject}
+        if let f = fromLbl { f.text = msg.from}
     }
     init(coder: NSCoder) {
         super.init(coder: coder)
@@ -50,7 +54,7 @@ class MsgVC: UIViewController {
 
 class TinmailVC: UIViewController {
     
-    @IBOutlet var MsgView: UIView
+    @IBOutlet var MsgView: UIView?
     override func viewDidLoad() {
         super.viewDidLoad()
         println(GAuthSingleton.sharedAuth()?.refreshToken)
@@ -97,10 +101,13 @@ class TinmailVC: UIViewController {
                     let msg = msgVal
                     println(msg.value.description)
                     let msgVC:Optional<MsgVC> = storyboard.instantiateViewControllerWithIdentifier("MsgVC") as? MsgVC
+                    println("getting main")
                     if let m = msgVC {
-                            MsgView.addSubview(m.view)
+                        onMainThread() {
+                            println("about to add msg view)")
+                            self.MsgView?.addSubview(m.view)  //TODO test this
                             m.setMsg(msg.value)
-                            
+                        }
                     }
                 case let .Error(e):
                     println("ERROR ", e.description)
