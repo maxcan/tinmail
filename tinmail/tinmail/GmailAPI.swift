@@ -179,7 +179,50 @@ class MsgList : JSONDecode {
     }
 }
 
-func getLabelList(auth: GTMOAuth2Authentication) -> Future<Result<[Label]>> {
+
+func decodeRes<A:JSONDecode>(ret: Future<Result<A>>) -> ((s1:NSData?, s2:NSError?) -> Void) {
+    return {s1, s2 in
+        switch s2 {
+        case .None:
+            if let s1 = s1 {
+//            JSValue.decode(s1).flatMap(Msg.fromJSON).maybe(
+//                   ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
+//                , { m in ret.sig(Result.Value(Box(m))) })
+                JSValue.decode(s1).map {(jsVal:JSValue) -> Void in
+                    if let m:A.J = A.fromJSON(jsVal) {
+                        ret.sig(Result.Value(Box(m as A)))
+                    } else {
+                        ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
+                    }
+                }
+            }
+        case let .Some(s2): ret.sig(Result.Error(s2))
+        }
+    }
+}
+
+func getGmailApiItem<A:JSONDecode>(auth: GTMOAuth2Authentication, url:String) -> Future<Result<A>> {
+    var fetcher:GTMHTTPFetcher =
+    GTMHTTPFetcher(URLString: url)
+    fetcher.authorizer = auth
+    fetcher.delegateQueue = NSOperationQueue()
+    fetcher.shouldFetchInBackground = true
+    var ret: Future<Result<A>> = Future(exec: gcdExecutionContext)
+    fetcher.beginFetchWithCompletionHandler(decodeRes(ret))
+    return ret
+}
+
+func getMsgDtl(auth: GTMOAuth2Authentication, msgRef: MsgRef) -> Future<Result<Msg>> {
+    return getGmailApiItem(auth, "https://www.googleapis.com/gmail/v1/users/me/messages/\(msgRef.id)?format=full")
+}
+
+func getMsgList(auth:GTMOAuth2Authentication) -> Future<Result<MsgList>> {
+    return getGmailApiItem(auth, kMsgListUrl)
+}
+
+func getLabelList(auth: GTMOAuth2Authentication) -> Future<Result<Array<Label>>> {
+   // return getGmailApiItem(auth, "https://www.googleapis.com/gmail/v1/users/me/labels")
+    // why can't this code use the getGmailApiItem refactoring??
     var fetcher:GTMHTTPFetcher =
     GTMHTTPFetcher(URLString: "https://www.googleapis.com/gmail/v1/users/me/labels")
     fetcher.authorizer = auth
@@ -205,73 +248,3 @@ func getLabelList(auth: GTMOAuth2Authentication) -> Future<Result<[Label]>> {
     }
     return ret
 }
-
-func decodeRes<A:JSONDecode>(ret: Future<Result<A>>) -> ((s1:NSData?, s2:NSError?) -> Void) {
-    return {s1, s2 in
-        switch s2 {
-        case .None:
-            if let s1 = s1 {
-//            JSValue.decode(s1).flatMap(Msg.fromJSON).maybe(
-//                   ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
-//                , { m in ret.sig(Result.Value(Box(m))) })
-                JSValue.decode(s1).map {(jsVal:JSValue) -> Void in
-                    if let m:A.J = A.fromJSON(jsVal) {
-                        ret.sig(Result.Value(Box(m as A)))
-                    } else {
-                        ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
-                    }
-                }
-            }
-        case let .Some(s2): ret.sig(Result.Error(s2))
-        }
-    }
-}
-
-func getMsgDtl(auth: GTMOAuth2Authentication, msgRef: MsgRef) -> Future<Result<Msg>> {
-    var fetcher:GTMHTTPFetcher =
-    GTMHTTPFetcher(URLString: "https://www.googleapis.com/gmail/v1/users/me/messages/\(msgRef.id)?format=full")
-    fetcher.authorizer = auth
-    fetcher.delegateQueue = NSOperationQueue()
-    fetcher.shouldFetchInBackground = true
-    var ret: Future<Result<Msg>> = Future(exec: gcdExecutionContext)
-    fetcher.beginFetchWithCompletionHandler(decodeRes(ret))
-//    fetcher.beginFetchWithCompletionHandler() { s1, s2 in
-//        if (s2 == nil) {
-//            JSValue.decode(s1).map {(jsVal:JSValue) -> Void in
-//                if let m = Msg.fromJSON(jsVal) {
-//                    ret.sig(Result.Value(Box(m)))
-//                } else {
-//                    ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
-//                }
-//            }
-//
-//            //the code below is more elegant but breaks the linker now
-//        } else {
-//            ret.sig(Result.Error(s2))
-//        }
-//    }
-    return ret
-}
-
-func getMsgList(auth:GTMOAuth2Authentication) -> Future<Result<MsgList>> {
-    var fetcher:GTMHTTPFetcher = GTMHTTPFetcher(URLString: kMsgListUrl)
-    fetcher.authorizer = auth
-    fetcher.shouldFetchInBackground = true
-    fetcher.delegateQueue = NSOperationQueue()
-    var ret: Future<Result<MsgList>> = Future(exec: gcdExecutionContext)
-    fetcher.beginFetchWithCompletionHandler() { s1, s2 in
-        if (s2 == nil) {
-            JSValue.decode(s1).map {(jsVal:JSValue) -> Void in
-                if let m = MsgList.fromJSON(jsVal) {
-                    ret.sig(Result.Value(Box(m)))
-                } else {
-                    ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
-                }
-            }
-        } else {
-            ret.sig(Result.Error(s2))
-        }
-    }
-    return ret
-}
-
