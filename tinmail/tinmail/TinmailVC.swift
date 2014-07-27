@@ -19,6 +19,14 @@ let kMyClientSecret = "mWx1B6A9RonGSIxI6m21itn9" // pre-assigned by service
 func onMainThread(f:(() -> Void)) -> Void {
     dispatch_async(dispatch_get_main_queue(), f)
 }
+
+func printMain(s: AnyObject?) -> Void {
+    onMainThread() { println(s)}
+}
+
+func printEncodedData(d: NSData?) -> Void {
+    printMain(NSString(data:d, encoding:NSASCIIStringEncoding))
+}
 class GAuthSingleton {
     var auth: GTMOAuth2Authentication?
     class func sharedAuth() -> GTMOAuth2Authentication? {
@@ -38,10 +46,10 @@ class MsgVC: UIViewController {
     @IBOutlet var fromLbl: UILabel?
     func setMsg(msg: Msg) {
         //self.msg = msg
-        println("about to set subj \(msg.subject) and f \(msg.from)")
+        printMain("about to set subj \(msg.subject) and f \(msg.from)")
         
         if (subjLbl == nil && fromLbl == nil) {
-            println("nils")
+            printMain("nils")
             return
         }
         if let s = subjLbl { s.text = msg.subject}
@@ -57,76 +65,77 @@ class TinmailVC: UIViewController {
     @IBOutlet var MsgView: UIView?
     override func viewDidLoad() {
         super.viewDidLoad()
-        println(GAuthSingleton.sharedAuth()?.refreshToken)
+        printMain(GAuthSingleton.sharedAuth()?.refreshToken)
         GAuthSingleton.sharedInstance.auth = GTMOAuth2ViewControllerTouch.authForGoogleFromKeychainForName(kKeychainItemName,
             clientID:kMyClientID,
             clientSecret:kMyClientSecret)
 //        NSLog("refresh tokey: ", GAuthSingleton.sharedAuth()?.refreshToken)
-        println("shared auth")
-        println(GAuthSingleton.sharedAuth())
+        printMain("shared auth")
+        printMain(GAuthSingleton.sharedAuth())
         if GAuthSingleton.sharedAuth()?.refreshToken == nil {
             self.performSegueWithIdentifier("showLogin", sender:self)
         } else {
-            getUserId()
+//            showMsgs()
         }
     }
     
     override func viewDidAppear(animated: Bool) {
-        println("view did appear")
-        if GAuthSingleton.sharedAuth()?.refreshToken == nil {
-            self.performSegueWithIdentifier("showLogin", sender:self)
-        } else {
-            getUserId()
-        }
+        printMain("view did appear")
+        showMsgs()
+//        if GAuthSingleton.sharedAuth()?.refreshToken == nil {
+//            self.performSegueWithIdentifier("showLogin", sender:self)
+//        } else {
+//            showMsgs()
+//        }
     }
-    func getUserId() {
-        if (GAuthSingleton.sharedAuth()?.refreshToken == nil) {
-            println("authsingleton reftoken is null")
-        }
+    func showMsgs() {
         if let auth = GAuthSingleton.sharedAuth() {
-            let msgListFut = getMsgList(auth)
-            let labels = getLabelList(auth)
-            func withMl(msgList:Result<MsgList>) -> Future<Result<Msg>> {
-                switch msgList {
-                case let .Value(ml):
-                    return getMsgDtl(auth, ml.value.messages[0])
-                case let .Error(e):
-                    println("ERROR ", e.description)
-                    return Future(exec:gcdExecutionContext, {return .Error(e)})
-                }
-            }
-            func withMsg(msgRes: Result<Msg>) -> Void {
-                switch msgRes {
-                case let .Value(msgVal):
-                    let msg = msgVal
-                    println(msg.value.description)
-                    let msgVC:Optional<MsgVC> = storyboard.instantiateViewControllerWithIdentifier("MsgVC") as? MsgVC
-                    println("getting main")
-                    if let m = msgVC {
-                        onMainThread() {
-                            println("about to add msg view)")
-                            self.MsgView?.addSubview(m.view)  //TODO test this
-                            m.setMsg(msg.value)
-                        }
-                    }
-                case let .Error(e):
-                    println("ERROR ", e.description)
-                    return
-                }
-            }
-            let msgFut = msgListFut.flatMap(withMl)
-            msgFut.map(withMsg)
-            labels.map({res -> Void in
-                println("labels cv:")
-                switch(res) {
-                    case let .Value(lbls):
-                        println("labelS:")
-                        println(lbls)
-                        return
-                    default: return
-            }})
-            return
+            ( GAuthSingleton.sharedAuth()?.refreshToken != nil
+            ? showMsgsWithAuth(auth)
+            : printMain("authsingleton reftoken is null") )
+        } else {
+            println("No auth in show msgs")
+            exit(1)
         }
+        
+    }
+    func showMsgsWithAuth(auth:GTMOAuth2Authentication) {
+        let msgListFut = getMsgList(auth)
+        func withMl(msgList:Result<MsgList>) -> Future<Result<Msg>> {
+            switch msgList {
+            case let .Value(ml):
+                return getMsgDtl(auth, ml.value.messages[0])
+            case let .Error(e):
+                println("ERROR ", e.description)
+                return Future(exec:gcdExecutionContext, {return .Error(e)})
+            }
+        }
+        func withMsg(msgRes: Result<Msg>) -> Void {
+            msgRes.toEither().either({e in die("ERROR getting msgres: \(e)", 4)}) { msg in
+                getLabelId("tinmailed", auth).map() {labelId -> Void in
+                    labelId.toEither().either( { e in printMain("label err: \(e)") } )
+                                               { e in printMain("label res: \(e)") }
+                }
+                printMain(msg.description)
+                printMain("getting main")
+                onMainThread() {
+                    if let msgVC = self.storyboard.instantiateViewControllerWithIdentifier("MsgVC") as? MsgVC {
+                        
+                        printMain("about to add msg view)")
+                        self.MsgView?.addSubview(msgVC.view)  //TODO test this
+                        msgVC.setMsg(msg)
+                    }
+                }
+            }
+        }
+        let msgFut = msgListFut.flatMap(withMl)
+        msgFut.map(withMsg)
     }
 }
+
+func die(s: String, code: Int32) {
+    println(s)
+    exit(code)
+}
+
 

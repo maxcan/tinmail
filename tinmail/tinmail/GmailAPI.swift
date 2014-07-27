@@ -52,9 +52,15 @@ enum LabelType: JSONDecode {
         }
     }
 }
-enum LabelMessageListVisibility:JSONDecode {
+enum LabelMessageListVisibility:JSON {
     case Hide
     case Show
+    func toJSON(x: LabelMessageListVisibility) -> JSValue {
+        switch(x) {
+        case Hide: return .JSString("hide")
+        case Show: return .JSString("show")
+        }
+    }
     static func fromJSON(x: JSValue) -> LabelMessageListVisibility? {
         switch(x) {
         case .JSString("hide"): return Hide
@@ -63,10 +69,17 @@ enum LabelMessageListVisibility:JSONDecode {
         }
     }
 }
-enum LabelListVisibility: JSONDecode {
+enum LabelListVisibility: JSON {
     case LabelHide
     case LabelShow
     case LabelShowIfUnread
+    func toJSON(x: LabelListVisibility) -> JSValue {
+        switch(x) {
+        case LabelHide: return .JSString("labelHide")
+        case LabelShow: return .JSString("labelShow")
+        case LabelShowIfUnread: return .JSString("labelShowIfUnread")
+        }
+    }
     static func fromJSON(x: JSValue) -> LabelListVisibility? {
         switch(x) {
         case .JSString("labelHide"): return LabelHide
@@ -94,10 +107,11 @@ class Label:JSONDecode, JSONEncode, JSON {
         self.messageListVisibility = messageListVisibility
         self.labelListVisibility = labelListVisibility
     }
-    class func create(id: String)(name: String)(type: LabelType)(mlv: LabelMessageListVisibility)(llv:LabelListVisibility) -> Label {
+    class func create(id: String)(name: String)(type: LabelType)(mlv: LabelMessageListVisibility?)(llv:LabelListVisibility?) -> Label {
         return Label(id, name, type, mlv, llv)
     }
     class func fromJSON(x: JSValue) -> Label? {
+//        printMain("label from json:  \(x.description)")
         switch (x) {
         case let .JSObject(d):
             let i:String? = d["id"] >>= JString.fromJSON
@@ -105,7 +119,8 @@ class Label:JSONDecode, JSONEncode, JSON {
             let mlv:LabelMessageListVisibility? = d["messageListVisibility"] >>= LabelMessageListVisibility.fromJSON
             let llv:LabelListVisibility? = d["labelListVisibility"] >>= LabelListVisibility.fromJSON
             let tp:LabelType? = d["type"] >>= LabelType.fromJSON
-            return create <^> i <*> n <*> tp <*> mlv <*> llv
+//            printMain("lable FJ mlv: \(mlv) llv: \(llv)  \(i) \(n)")
+            return create <^> i <*> n <*> tp <*> .Some(mlv) <*> .Some(llv)
         default: return Optional.None
         }
     }
@@ -135,7 +150,7 @@ class Msg : Printable, JSONDecode {
         case let .JSObject(d):
             let i:String? = d["id"] >>= JString.fromJSON
             let ti:String? = d["threadId"] >>= JString.fromJSON
-            println("i: \(i) ti: \(ti)")
+//            printMain("i: \(i) ti: \(ti)")
             switch(d["payload"]) {
             case let .Some(.JSObject(payloadDict)):
                 let hdrs:[Dictionary<String,String>]? = payloadDict["headers"] >>= JArray<Dictionary<String, String>,JDictionary<String, JString>>.fromJSON
@@ -151,7 +166,7 @@ class Msg : Printable, JSONDecode {
                     }
                     let subj:String? = hdrDict["Subject"]
                     let from:String? = hdrDict["From"]
-                    //println("hdrDict: \(hdrDict) subj: \(subj) from: \(from)")
+                    //printMain("hdrDict: \(hdrDict) subj: \(subj) from: \(from)")
                     return create <^> i <*> from <*> ti <*> subj
                 }
             default: return Optional.None
@@ -190,7 +205,7 @@ func decodeRes<A:JSONDecode>(ret: Future<Result<A>>) -> ((s1:NSData?, s2:NSError
 //                , { m in ret.sig(Result.Value(Box(m))) })
                 JSValue.decode(s1).map {(jsVal:JSValue) -> Void in
                     if let m:A.J = A.fromJSON(jsVal) {
-                        ret.sig(Result.Value(Box(m as A)))
+                        ret.sig(pure(m as A))
                     } else {
                         ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
                     }
@@ -220,6 +235,52 @@ func getMsgList(auth:GTMOAuth2Authentication) -> Future<Result<MsgList>> {
     return getGmailApiItem(auth, kMsgListUrl)
 }
 
+func getLabelId(label: String, auth: GTMOAuth2Authentication) -> Future<Result<String>> {
+    return getLabelList(auth).flatMap() {(res: Result<Array<Label>>) -> Future<Result<String>> in
+//        var ret: Future<Result<Box<String>>> = Future(exec: gcdExecutionContext)
+//        printMain("get label list res: \(res)")
+        
+        var ret:Future<Result<String>> = Future(exec: gcdExecutionContext)
+        switch (res) {
+        case let .Value(listRes):
+//            printMain("get label list res: \(listRes.value)")
+            let matchingLabels = filter(listRes.value) { $0.name == label }
+            if (matchingLabels.isEmpty) {
+                var fetcher:GTMHTTPFetcher =
+                GTMHTTPFetcher(URLString: "https://www.googleapis.com/gmail/v1/users/me/labels")
+                fetcher.authorizer = auth
+                fetcher.delegateQueue = NSOperationQueue()
+                fetcher.shouldFetchInBackground = true
+                let newLabelObj = JSValue.JSObject([ "name": .JSString(label)
+                    , "messageListVisibility": LabelMessageListVisibility.Show.toJSON(.Show)
+                    , "labelListVisibility": LabelListVisibility.LabelShow.toJSON(.LabelShow)
+                    ])
+                fetcher.postData = newLabelObj.encode()
+                fetcher.mutableRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                //fetcher.setLoggingEnabled(true)
+                printEncodedData(newLabelObj.encode())
+//              printMain(fetcher.mutableRequest.description)
+                printMain("new label: \(newLabelObj)")
+                fetcher.beginFetchWithCompletionHandler() { postRes, postErr in
+//                    printMain("label id response: \(postRes)")
+                    switch (JSValue.decode(postRes) >>= Label.fromJSON, postErr) {
+                        case let (_ , .Some(err)):
+                            printMain("Error: \(err)")
+                            printEncodedData(err.userInfo["data"] as? NSData)
+                            ret.sig(Result.Error(err))
+                        case let (.Some(lbl), .None): ret.sig(pure(lbl.id))
+                        default:  ret.sig(Result.Error(NSError.errorWithDomain("couldn't get label", code: 1, userInfo:nil)))
+                    }
+                }
+            } else {
+                ret.sig(pure(matchingLabels[0].id))
+            }
+        case let .Error(e): ret.sig(.Error(e))
+        }
+        return ret
+    }
+}
+
 func getLabelList(auth: GTMOAuth2Authentication) -> Future<Result<Array<Label>>> {
    // return getGmailApiItem(auth, "https://www.googleapis.com/gmail/v1/users/me/labels")
     // why can't this code use the getGmailApiItem refactoring??
@@ -229,22 +290,22 @@ func getLabelList(auth: GTMOAuth2Authentication) -> Future<Result<Array<Label>>>
     fetcher.delegateQueue = NSOperationQueue()
     fetcher.shouldFetchInBackground = true
     var ret: Future<Result<[Label]>> = Future(exec: gcdExecutionContext)
-    println("get label alist, about to run fetch")
-    fetcher.beginFetchWithCompletionHandler() { s1, s2 in
-        if (s2 == nil) {
-            println("label list, no error")
-            //let jsVal = JSValue.decode(s1)
-            JSValue.decode(s1).map {(jsVal:JSValue) -> Void in
-                if let m = JArray<Label, Label>.fromJSON(jsVal) {
-                    ret.sig(Result.Value(Box(m)))
-                } else {
-                    ret.sig(Result.Error(NSError.errorWithDomain("LabelListParse", code: 1, userInfo:nil)))
-                }
-                return
+//    printMain("get label alist, about to run fetch")
+    fetcher.beginFetchWithCompletionHandler() { getRes, getErr in
+        switch (JSValue.decode(getRes), getErr) {
+        case let (_ , .Some(err)): ret.sig(Result.Error(err))
+        case let (.Some(.JSObject(dict)), .None):
+//            printMain("label list, no error: \(dict)")
+            if let lblVals = dict["labels"] >>= JArray<Label, Label>.fromJSON {
+//                printMain("label list PARSED:, no error: \(lblVals)")
+            
+                ret.sig(pure(lblVals))
+            } else {
+                ret.sig(Result.Error(NSError.errorWithDomain("LabelListParse", code: 1, userInfo:nil)))
             }
-        } else {
-            ret.sig(Result.Error(s2))
+        default:  ret.sig(Result.Error(NSError.errorWithDomain("couldn't get label list", code: 1, userInfo:nil)))
         }
+        
     }
     return ret
 }
