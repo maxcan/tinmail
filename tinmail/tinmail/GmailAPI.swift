@@ -17,22 +17,15 @@ func initFetcher(urlTail:String) -> GTMHTTPFetcher {
     return GTMHTTPFetcher(URLString: "\(kGmailApiBase)\(urlTail)")
 }
 
-class MsgRef : Printable, JSONDecode, JSONEncode, JSON {
+struct MsgRef : Printable, JSONDecode {
     let id:String
     let threadId:String
-    init(id:String, threadId:String) {
-        self.id = id
-        self.threadId = threadId
-    }
     var description: String {return "MsgRef: id:\(self.id) threadId:\(self.threadId)"}
     typealias J = MsgRef
-    //    class func show(ref: MsgRef) -> String {
-    //        return "MsgRef: id:\(ref.id) threadId:\(ref.threadId)"
-    //    }
-    func toJSON(x: J) -> JSValue {
+    static func toJSON(x: J) -> JSValue {
         return JSValue.JSObject(["id": JSValue.JSString(x.id), "threadId": JSValue.JSString(x.threadId)])
     }
-    class func fromJSON(x: JSValue) -> MsgRef? {
+    static func fromJSON(x: JSValue) -> MsgRef? {
         switch (x) {
         case let .JSObject(d):
             let i:String? = d["id"] >>= JString.fromJSON
@@ -60,7 +53,7 @@ enum LabelType: JSONDecode {
 enum LabelMessageListVisibility:JSON {
     case Hide
     case Show
-    func toJSON(x: LabelMessageListVisibility) -> JSValue {
+    static func toJSON(x: LabelMessageListVisibility) -> JSValue {
         switch(x) {
         case Hide: return .JSString("hide")
         case Show: return .JSString("show")
@@ -78,7 +71,7 @@ enum LabelListVisibility: JSON {
     case LabelHide
     case LabelShow
     case LabelShowIfUnread
-    func toJSON(x: LabelListVisibility) -> JSValue {
+    static func toJSON(x: LabelListVisibility) -> JSValue {
         switch(x) {
         case LabelHide: return .JSString("labelHide")
         case LabelShow: return .JSString("labelShow")
@@ -95,27 +88,20 @@ enum LabelListVisibility: JSON {
     }
 }
 
-class Label:JSONDecode, JSONEncode, JSON {
+struct Label:JSONDecode {
     let id: String
     let name: String
     let type: LabelType
     let messageListVisibility: LabelMessageListVisibility?
     let labelListVisibility: LabelListVisibility?
-    func toJSON(x: J) -> JSValue {
-        return JSValue.JSNull()
-    }
+//    static func toJSON(x: J) -> JSValue {
+//        return JSValue.JSNull()
+//    }
     typealias J = Label
-    init(_ id: String, _ name: String, _ type: LabelType, _ messageListVisibility: LabelMessageListVisibility?, _ labelListVisibility:LabelListVisibility? ) {
-        self.id = id
-        self.type = type
-        self.name = name
-        self.messageListVisibility = messageListVisibility
-        self.labelListVisibility = labelListVisibility
+    static func create(id: String)(name: String)(type: LabelType)(mlv: LabelMessageListVisibility?)(llv:LabelListVisibility?) -> Label {
+        return Label(id:id, name:name, type:type, messageListVisibility:mlv, labelListVisibility:llv)
     }
-    class func create(id: String)(name: String)(type: LabelType)(mlv: LabelMessageListVisibility?)(llv:LabelListVisibility?) -> Label {
-        return Label(id, name, type, mlv, llv)
-    }
-    class func fromJSON(x: JSValue) -> Label? {
+    static func fromJSON(x: JSValue) -> Label? {
 //        printMain("label from json:  \(x.description)")
         switch (x) {
         case let .JSObject(d):
@@ -131,31 +117,23 @@ class Label:JSONDecode, JSONEncode, JSON {
     }
 }
 
-class Msg : Printable, JSONDecode {
+struct Msg : Printable, JSONDecode {
     let id: String
     let from: String
     let subject: String
     let threadId:String
     let deliveredTo: String?
-    init(id:String, from:String, threadId:String, subject: String) {
-        self.id = id
-        self.threadId = threadId
-        self.from = from
-        self.subject = subject
-        self.deliveredTo = nil
-    }
     var description:String {
-    return "Msg: id:\(id) threadId:\(threadId) from:\(from) subject:\(subject)"
+        return "Msg: id:\(id) threadId:\(threadId) from:\(from) subject:\(subject)"
     }
-    class func create(id: String)(from: String)(threadId: String)(subject: String) -> Msg {
-        return Msg(id:id, from: from, threadId: threadId, subject: subject)
+    static func create(id: String)(from: String)(threadId: String)(subject: String) -> Msg {
+        return Msg(id:id, from: from, subject: subject, threadId: threadId, deliveredTo: nil)
     }
-    class func fromJSON(x: JSValue) -> Msg? {
+    static func fromJSON(x: JSValue) -> Msg? {
         switch (x) {
         case let .JSObject(d):
             let i:String? = d["id"] >>= JString.fromJSON
             let ti:String? = d["threadId"] >>= JString.fromJSON
-//            printMain("i: \(i) ti: \(ti)")
             switch(d["payload"]) {
             case let .Some(.JSObject(payloadDict)):
                 let hdrs:[Dictionary<String,String>]? = payloadDict["headers"] >>= JArray<Dictionary<String, String>,JDictionary<String, JString>>.fromJSON
@@ -167,7 +145,6 @@ class Msg : Printable, JSONDecode {
                                 hdrDict.updateValue(v, forKey:n)
                             }
                         }
-                        //                        hdrDict.updateValue(curHdr["value"]!, forKey: curHdr["name"]!)
                     }
                     let subj:String? = hdrDict["Subject"]
                     let from:String? = hdrDict["From"]
@@ -192,7 +169,7 @@ class MsgList : JSONDecode {
         var msgs:[MsgRef]?
         switch (x) {
         case let .JSObject(dict):
-            msgs = dict["messages"] >>= JArray<MsgRef, MsgRef>.fromJSON
+            msgs = dict["messages"] >>= JArrayFrom<MsgRef, MsgRef>.fromJSON
             if let m = msgs {return MsgList(m)} else { return Optional.None}
         default: return Optional.None
         }
@@ -267,18 +244,18 @@ internal func modifyMsgThreads( auth: GTMOAuth2Authentication
     return ret
 }
 
-//func archiveMsg(auth: GTMOAuth2Authentication)(msg: Msg) -> Future<Result<String>> {
-//    return getLabelId("tinmailed", auth).flatMap() { res in
-//         switch res {
-//            case let .Error(e):
-//                // collapsing this onto one lines causes the swift typechecker to choke
-//                let f: Future<Result<String>> = Future(exec:gcdExecutionContext)
-//                f.sig(res)
-//                return f
-//            case let .Value(lblId): return modifyMsgThreads(auth, msg, [lblId.value], ["INBOX"])
-//        }
-//    }
-//}
+func archiveMsg(auth: GTMOAuth2Authentication)(msg: Msg) -> Future<Result<String>> {
+    return getLabelId("tinmailed", auth).flatMap() { res in
+         switch res {
+            case let .Error(e):
+                // collapsing this onto one lines causes the swift typechecker to choke
+                let f: Future<Result<String>> = Future(exec:gcdExecutionContext)
+                f.sig(res)
+                return f
+            case let .Value(lblId): return modifyMsgThreads(auth, msg, [lblId.value], ["INBOX"])
+        }
+    }
+}
 
 func getLabelId(label: String, auth: GTMOAuth2Authentication) -> Future<Result<String>> {
     return getLabelList(auth).flatMap() {(res: Result<Array<Label>>) -> Future<Result<String>> in
@@ -296,8 +273,8 @@ func getLabelId(label: String, auth: GTMOAuth2Authentication) -> Future<Result<S
                 fetcher.delegateQueue = NSOperationQueue()
                 fetcher.shouldFetchInBackground = true
                 let newLabelObj = JSValue.JSObject([ "name": .JSString(label)
-                    , "messageListVisibility": LabelMessageListVisibility.Show.toJSON(.Show)
-                    , "labelListVisibility": LabelListVisibility.LabelShow.toJSON(.LabelShow)
+                    , "messageListVisibility": LabelMessageListVisibility.toJSON(.Show)
+                    , "labelListVisibility": LabelListVisibility.toJSON(.LabelShow)
                     ])
                 fetcher.postData = newLabelObj.encode()
                 fetcher.mutableRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -339,7 +316,7 @@ func getLabelList(auth: GTMOAuth2Authentication) -> Future<Result<Array<Label>>>
         case let (_ , .Some(err)): ret.sig(Result.Error(err))
         case let (.Some(.JSObject(dict)), .None):
 //            printMain("label list, no error: \(dict)")
-            if let lblVals = dict["labels"] >>= JArray<Label, Label>.fromJSON {
+            if let lblVals = dict["labels"] >>= JArrayFrom<Label, Label>.fromJSON {
 //                printMain("label list PARSED:, no error: \(lblVals)")
             
                 ret.sig(pure(lblVals))
