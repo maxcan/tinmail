@@ -10,7 +10,12 @@ import Foundation
 import swiftz
 import swiftz_core
 
-let kMsgListUrl = "https://www.googleapis.com/gmail/v1/users/me/messages?q=-label:tinmailed"
+//let kMsgListUrl = "\(kGmailApiBase)messages?labelIds=INBOX&q=-label:tinmailed"
+
+func initFetcher(urlTail:String) -> GTMHTTPFetcher {
+    let kGmailApiBase = "https://www.googleapis.com/gmail/v1/users/me/"
+    return GTMHTTPFetcher(URLString: "\(kGmailApiBase)\(urlTail)")
+}
 
 class MsgRef : Printable, JSONDecode, JSONEncode, JSON {
     let id:String
@@ -216,9 +221,8 @@ func decodeRes<A:JSONDecode>(ret: Future<Result<A>>) -> ((s1:NSData?, s2:NSError
     }
 }
 
-func getGmailApiItem<A:JSONDecode>(auth: GTMOAuth2Authentication, url:String) -> Future<Result<A>> {
-    var fetcher:GTMHTTPFetcher =
-    GTMHTTPFetcher(URLString: url)
+func getGmailApiItem<A:JSONDecode>(auth: GTMOAuth2Authentication, urlTail:String) -> Future<Result<A>> {
+    var fetcher = initFetcher(urlTail)
     fetcher.authorizer = auth
     fetcher.delegateQueue = NSOperationQueue()
     fetcher.shouldFetchInBackground = true
@@ -228,12 +232,53 @@ func getGmailApiItem<A:JSONDecode>(auth: GTMOAuth2Authentication, url:String) ->
 }
 
 func getMsgDtl(auth: GTMOAuth2Authentication, msgRef: MsgRef) -> Future<Result<Msg>> {
-    return getGmailApiItem(auth, "https://www.googleapis.com/gmail/v1/users/me/messages/\(msgRef.id)?format=full")
+    return getGmailApiItem(auth, "messages/\(msgRef.id)?format=full")
 }
 
 func getMsgList(auth:GTMOAuth2Authentication) -> Future<Result<MsgList>> {
-    return getGmailApiItem(auth, kMsgListUrl)
+    return getGmailApiItem(auth, "messages?labelIds=INBOX&q=-label:tinmailed")
 }
+
+internal func modifyMsgThreads( auth: GTMOAuth2Authentication
+                              , msg: Msg
+                              , newIds: [String]
+                              , remIds: [String]) -> Future<Result<String>> {
+    var ret:Future<Result<String>> = Future(exec: gcdExecutionContext)
+    var fetcher:GTMHTTPFetcher =
+                GTMHTTPFetcher(URLString: "https://www.googleapis.com/gmail/v1/users/me/messages/\(msg.id)/modify")
+    fetcher.authorizer = auth
+    fetcher.delegateQueue = NSOperationQueue()
+    fetcher.shouldFetchInBackground = true
+    let newLabelObj = JSValue.JSObject(
+        [ "addLabelIds": JSValue.JSArray(newIds.map() { .JSString($0)})
+        , "removeLabelIds": JSValue.JSArray(remIds.map() { .JSString($0)})
+        ])
+    fetcher.postData = newLabelObj.encode()
+    fetcher.mutableRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    printEncodedData(newLabelObj.encode())
+    printMain("new label: \(newLabelObj)")
+    fetcher.beginFetchWithCompletionHandler() { postRes, postErr in
+        switch (JSValue.decode(postRes), postErr) {
+        case let (_ , .Some(err)): ret.sig(Result.Error(err))
+        case let (.Some(.JSObject(dict)), .None): ret.sig(pure("success"))
+        default:  ret.sig(Result.Error(NSError.errorWithDomain("couldn't modify msg", code: 1, userInfo:nil)))
+        }
+    }
+    return ret
+}
+
+//func archiveMsg(auth: GTMOAuth2Authentication)(msg: Msg) -> Future<Result<String>> {
+//    return getLabelId("tinmailed", auth).flatMap() { res in
+//         switch res {
+//            case let .Error(e):
+//                // collapsing this onto one lines causes the swift typechecker to choke
+//                let f: Future<Result<String>> = Future(exec:gcdExecutionContext)
+//                f.sig(res)
+//                return f
+//            case let .Value(lblId): return modifyMsgThreads(auth, msg, [lblId.value], ["INBOX"])
+//        }
+//    }
+//}
 
 func getLabelId(label: String, auth: GTMOAuth2Authentication) -> Future<Result<String>> {
     return getLabelList(auth).flatMap() {(res: Result<Array<Label>>) -> Future<Result<String>> in
@@ -246,8 +291,7 @@ func getLabelId(label: String, auth: GTMOAuth2Authentication) -> Future<Result<S
 //            printMain("get label list res: \(listRes.value)")
             let matchingLabels = filter(listRes.value) { $0.name == label }
             if (matchingLabels.isEmpty) {
-                var fetcher:GTMHTTPFetcher =
-                GTMHTTPFetcher(URLString: "https://www.googleapis.com/gmail/v1/users/me/labels")
+                var fetcher = initFetcher("labels")
                 fetcher.authorizer = auth
                 fetcher.delegateQueue = NSOperationQueue()
                 fetcher.shouldFetchInBackground = true
@@ -284,8 +328,7 @@ func getLabelId(label: String, auth: GTMOAuth2Authentication) -> Future<Result<S
 func getLabelList(auth: GTMOAuth2Authentication) -> Future<Result<Array<Label>>> {
    // return getGmailApiItem(auth, "https://www.googleapis.com/gmail/v1/users/me/labels")
     // why can't this code use the getGmailApiItem refactoring??
-    var fetcher:GTMHTTPFetcher =
-    GTMHTTPFetcher(URLString: "https://www.googleapis.com/gmail/v1/users/me/labels")
+    var fetcher = initFetcher("labels")
     fetcher.authorizer = auth
     fetcher.delegateQueue = NSOperationQueue()
     fetcher.shouldFetchInBackground = true
