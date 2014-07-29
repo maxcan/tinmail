@@ -244,17 +244,36 @@ internal func modifyMsgThreads( auth: GTMOAuth2Authentication
     return ret
 }
 
-func archiveMsg(auth: GTMOAuth2Authentication)(msg: Msg) -> Future<Result<String>> {
-    return getLabelId("tinmailed", auth).flatMap() { res in
+typealias FrString = Future<Result<String>>
+typealias FrMsgModification = Future<Result<(msg: Msg) -> FrString>>
+
+// the genXyzMsg functions return a future<msg -> future>.  the idea is that
+// since you need to know a label id, its better to just call that once and
+// "cache" it by just using the closed function that is returned
+func genArchiveMsg(auth: GTMOAuth2Authentication) -> FrMsgModification {
+    let f:FrMsgModification = Future(exec:gcdExecutionContext)
+    getLabelId("tinmailed", auth).map() { (res:Result<String>) -> Void in
          switch res {
-            case let .Error(e):
-                // collapsing this onto one lines causes the swift typechecker to choke
-                let f: Future<Result<String>> = Future(exec:gcdExecutionContext)
-                f.sig(res)
-                return f
-            case let .Value(lblId): return modifyMsgThreads(auth, msg, [lblId.value], ["INBOX"])
+            case let .Error(e): f.sig(.Error(e))
+            case let .Value(lblId): f.sig(pure({ msg -> FrString in
+                modifyMsgThreads(auth, msg, [lblId.value], ["INBOX"])
+                }))
         }
     }
+    return f
+}
+
+func genSaveMsg(auth: GTMOAuth2Authentication) -> FrMsgModification {
+    let f:FrMsgModification = Future(exec:gcdExecutionContext)
+    getLabelId("tinmailed", auth).map() { (res:Result<String>) -> Void in
+         switch res {
+            case let .Error(e): f.sig(.Error(e))
+            case let .Value(lblId): f.sig(pure({ msg -> FrString in
+                modifyMsgThreads(auth, msg, [lblId.value], [])
+                }))
+        }
+    }
+    return f
 }
 
 func getLabelId(label: String, auth: GTMOAuth2Authentication) -> Future<Result<String>> {
