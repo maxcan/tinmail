@@ -14,7 +14,9 @@ import swiftz_core
 
 func initFetcher(urlTail:String) -> GTMHTTPFetcher {
     let kGmailApiBase = "https://www.googleapis.com/gmail/v1/users/me/"
-    return GTMHTTPFetcher(URLString: "\(kGmailApiBase)\(urlTail)")
+    let fet = GTMHTTPFetcher(URLString: "\(kGmailApiBase)\(urlTail)")
+    fet.shouldFetchInBackground = true
+    return fet
 }
 
 struct MsgRef : Printable, JSONDecode {
@@ -170,7 +172,7 @@ class MsgList : JSONDecode {
         switch (x) {
         case let .JSObject(dict):
             msgs = dict["messages"] >>= JArrayFrom<MsgRef, MsgRef>.fromJSON
-            if let m = msgs {return MsgList(m)} else { return Optional.None}
+            if let m = msgs {return MsgList(m) } else { return Optional.None}
         default: return Optional.None
         }
     }
@@ -180,6 +182,7 @@ class MsgList : JSONDecode {
 func decodeRes<A:JSONDecode>(mv: MVar<Result<A>>) -> ((s1:NSData?, s2:NSError?) -> Void) {
 // func decodeRes<A:JSONDecode>(ret: Future<Result<A>>) -> ((s1:NSData?, s2:NSError?) -> Void) {
     return {s1, s2 in
+        printMain("s1 \(s1) s2 \(s2)")
         switch s2 {
         case .None:
             if let s1 = s1 {
@@ -187,8 +190,16 @@ func decodeRes<A:JSONDecode>(mv: MVar<Result<A>>) -> ((s1:NSData?, s2:NSError?) 
 //                   ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
 //                , { m in ret.sig(Result.Value(Box(m))) })
                 JSValue.decode(s1).map {(jsVal:JSValue) -> Void in
+                    println("jsval: \(jsVal)")
                     if let m:A.J = A.fromJSON(jsVal) {
-                        mv.put(pure(m as A))
+                        switch (m as? A) {
+                            case let .Some(mm):
+                                println("parse succ  emp \(mv.isEmpty())")
+                                mv.put(pure(mm))
+                                println("putted mvar")
+                            case .None:
+                                mv.put(Result.Error(NSError.errorWithDomain("bad cast", code: 1, userInfo:nil)))
+                        }
                     } else {
                         mv.put(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
                     }
@@ -199,15 +210,57 @@ func decodeRes<A:JSONDecode>(mv: MVar<Result<A>>) -> ((s1:NSData?, s2:NSError?) 
     }
 }
 
+//
+//public class Ctx: ExecutionContext {
+//    let ctxName:String
+//    init(_ s:String) { ctxName = s }
+//    public func submit<A>(x: Future<A>, work: () -> A) {
+//
+//        let q = dispatch_queue_create(self.ctxName, DISPATCH_QUEUE_CONCURRENT)
+//        dispatch_async(q, {
+//            let thr = NSThread.currentThread().description
+//            printMain("inside dis async.  thread: \(thr)")
+//            x.sig(work())
+//        })
+//    }
+//}
+
+
 func getGmailApiItem<A:JSONDecode>(auth: GTMOAuth2Authentication, urlTail:String) -> Future<Result<A>> {
+    let mv:MVar<Result<A>> = MVar()
     var fetcher = initFetcher(urlTail)
     fetcher.authorizer = auth
-    fetcher.delegateQueue = NSOperationQueue()
-    fetcher.shouldFetchInBackground = true
+    //        var q = NSOperationQueue()
+    //        q.maxConcurrentOperationCount = 5
+    //        fetcher.delegateQueue = NSOperationQueue.mainQueue()
+    //        fetcher.shouldFetchInBackground = true
+
+    //        UIApplication.beginBackgroundTaskWithName(UIApplication.sharedApplication())("fetcher gmail") {
+    //        UIApplication.beginBackgroundTaskWithName("fetcher gmail", {
+    fetcher.beginFetchWithCompletionHandler(decodeRes(mv))
+//    fetcher.beginFetchWithCompletionHandler() { d, e in
+//        let q = dispatch_queue_create("tt\(urlTail)", DISPATCH_QUEUE_CONCURRENT)
+//        dispatch_async(q) {decodeRes(mv)(s1: d, s2:e)}
+//    }
     var ret: Future<Result<A>> = Future(exec: gcdExecutionContext) {
-        let mv:MVar<Result<A>> = MVar()
-        fetcher.beginFetchWithCompletionHandler(decodeRes(mv))
+
+
+        //        var mutReq = fetcher.mutableRequest
+        //        NSURLConnection.sendAsynchronousRequest(mutReq, queue: q, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
+        //            decodeRes(mv)(s1:data, s2:error)
+        //    /* Your code */
+//            })
+
+//        let ft:Future<Void> = Future(exec: gcdExecutionContext) {
+//            var fetcher = initFetcher(urlTail)
+//            fetcher.shouldFetchInBackground = true
+//            fetcher.authorizer = auth
+//            fetcher.beginFetchWithCompletionHandler(decodeRes(mv))
+//            return
+//        }
+        println("about to take mvar")
         return mv.take()
+//        return Result.Error(NSError.errorWithDomain("take mvar placeholder", code: 1, userInfo:nil))
     }
     return ret
 }
