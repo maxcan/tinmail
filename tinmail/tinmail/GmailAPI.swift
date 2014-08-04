@@ -177,7 +177,8 @@ class MsgList : JSONDecode {
 }
 
 
-func decodeRes<A:JSONDecode>(ret: Future<Result<A>>) -> ((s1:NSData?, s2:NSError?) -> Void) {
+func decodeRes<A:JSONDecode>(mv: MVar<Result<A>>) -> ((s1:NSData?, s2:NSError?) -> Void) {
+// func decodeRes<A:JSONDecode>(ret: Future<Result<A>>) -> ((s1:NSData?, s2:NSError?) -> Void) {
     return {s1, s2 in
         switch s2 {
         case .None:
@@ -187,13 +188,13 @@ func decodeRes<A:JSONDecode>(ret: Future<Result<A>>) -> ((s1:NSData?, s2:NSError
 //                , { m in ret.sig(Result.Value(Box(m))) })
                 JSValue.decode(s1).map {(jsVal:JSValue) -> Void in
                     if let m:A.J = A.fromJSON(jsVal) {
-                        ret.sig(pure(m as A))
+                        mv.put(pure(m as A))
                     } else {
-                        ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
+                        mv.put(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
                     }
                 }
             }
-        case let .Some(s2): ret.sig(Result.Error(s2))
+        case let .Some(s2): mv.put(Result.Error(s2))
         }
     }
 }
@@ -203,8 +204,11 @@ func getGmailApiItem<A:JSONDecode>(auth: GTMOAuth2Authentication, urlTail:String
     fetcher.authorizer = auth
     fetcher.delegateQueue = NSOperationQueue()
     fetcher.shouldFetchInBackground = true
-    var ret: Future<Result<A>> = Future(exec: gcdExecutionContext)
-    fetcher.beginFetchWithCompletionHandler(decodeRes(ret))
+    var ret: Future<Result<A>> = Future(exec: gcdExecutionContext) {
+        let mv:MVar<Result<A>> = MVar()
+        fetcher.beginFetchWithCompletionHandler(decodeRes(mv))
+        return mv.take()
+    }
     return ret
 }
 

@@ -40,6 +40,19 @@ class GAuthSingleton {
     }
 }
 
+class MsgModel {
+    var auth: GTMOAuth2Authentication?
+    class func sharedAuth() -> GTMOAuth2Authentication? {
+        return GAuthSingleton.sharedInstance.auth
+    }
+    class var sharedInstance : GAuthSingleton {
+        struct Static {
+            static let instance : GAuthSingleton = GAuthSingleton()
+        }
+        return Static.instance
+    }
+}
+
 class MsgVC: UIViewController {
     //    msg: Msg
     @IBOutlet var subjLbl: UILabel?
