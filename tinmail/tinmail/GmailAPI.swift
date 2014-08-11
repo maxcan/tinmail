@@ -14,7 +14,9 @@ import swiftz_core
 
 func initFetcher(urlTail:String) -> GTMHTTPFetcher {
     let kGmailApiBase = "https://www.googleapis.com/gmail/v1/users/me/"
-    return GTMHTTPFetcher(URLString: "\(kGmailApiBase)\(urlTail)")
+    let fet = GTMHTTPFetcher(URLString: "\(kGmailApiBase)\(urlTail)")
+    fet.shouldFetchInBackground = true
+    return fet
 }
 
 struct MsgRef : Printable, JSONDecode {
@@ -102,7 +104,6 @@ struct Label:JSONDecode {
         return Label(id:id, name:name, type:type, messageListVisibility:mlv, labelListVisibility:llv)
     }
     static func fromJSON(x: JSValue) -> Label? {
-//        printMain("label from json:  \(x.description)")
         switch (x) {
         case let .JSObject(d):
             let i:String? = d["id"] >>= JString.fromJSON
@@ -110,7 +111,6 @@ struct Label:JSONDecode {
             let mlv:LabelMessageListVisibility? = d["messageListVisibility"] >>= LabelMessageListVisibility.fromJSON
             let llv:LabelListVisibility? = d["labelListVisibility"] >>= LabelListVisibility.fromJSON
             let tp:LabelType? = d["type"] >>= LabelType.fromJSON
-//            printMain("lable FJ mlv: \(mlv) llv: \(llv)  \(i) \(n)")
             return create <^> i <*> n <*> tp <*> .Some(mlv) <*> .Some(llv)
         default: return Optional.None
         }
@@ -170,15 +170,17 @@ class MsgList : JSONDecode {
         switch (x) {
         case let .JSObject(dict):
             msgs = dict["messages"] >>= JArrayFrom<MsgRef, MsgRef>.fromJSON
-            if let m = msgs {return MsgList(m)} else { return Optional.None}
+            if let m = msgs {return MsgList(m) } else { return Optional.None}
         default: return Optional.None
         }
     }
 }
 
 
-func decodeRes<A:JSONDecode>(ret: Future<Result<A>>) -> ((s1:NSData?, s2:NSError?) -> Void) {
+func decodeRes<A:JSONDecode>(mv: MVar<Result<A>>) -> ((s1:NSData?, s2:NSError?) -> Void) {
+// func decodeRes<A:JSONDecode>(ret: Future<Result<A>>) -> ((s1:NSData?, s2:NSError?) -> Void) {
     return {s1, s2 in
+        println("decode res thread id: \(NSThread.currentThread())")
         switch s2 {
         case .None:
             if let s1 = s1 {
@@ -187,25 +189,34 @@ func decodeRes<A:JSONDecode>(ret: Future<Result<A>>) -> ((s1:NSData?, s2:NSError
 //                , { m in ret.sig(Result.Value(Box(m))) })
                 JSValue.decode(s1).map {(jsVal:JSValue) -> Void in
                     if let m:A.J = A.fromJSON(jsVal) {
-                        ret.sig(pure(m as A))
+                        switch (m as? A) {
+                            case let .Some(mm):
+                                println("parse succ  emp \(mv.isEmpty())")
+                                mv.put(pure(mm))
+                                println("putted mvar")
+                            case .None:
+                                mv.put(Result.Error(NSError.errorWithDomain("bad cast", code: 1, userInfo:nil)))
+                        }
                     } else {
-                        ret.sig(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
+                        mv.put(Result.Error(NSError.errorWithDomain("MsgJSONParse", code: 1, userInfo:nil)))
                     }
                 }
             }
-        case let .Some(s2): ret.sig(Result.Error(s2))
+        case let .Some(s2): mv.put(Result.Error(s2))
         }
     }
 }
 
 func getGmailApiItem<A:JSONDecode>(auth: GTMOAuth2Authentication, urlTail:String) -> Future<Result<A>> {
+    let mv:MVar<Result<A>> = MVar()
     var fetcher = initFetcher(urlTail)
     fetcher.authorizer = auth
-    fetcher.delegateQueue = NSOperationQueue()
+    var q = NSOperationQueue()
+    q.maxConcurrentOperationCount = 5
+    fetcher.delegateQueue = NSOperationQueue.mainQueue()
     fetcher.shouldFetchInBackground = true
-    var ret: Future<Result<A>> = Future(exec: gcdExecutionContext)
-    fetcher.beginFetchWithCompletionHandler(decodeRes(ret))
-    return ret
+    fetcher.beginFetchWithCompletionHandler(decodeRes(mv))
+    return Future(exec: gcdExecutionContext, mv.take())
 }
 
 func getMsgDtl(auth: GTMOAuth2Authentication, msgRef: MsgRef) -> Future<Result<Msg>> {
@@ -220,7 +231,8 @@ internal func modifyMsgThreads( auth: GTMOAuth2Authentication
                               , msg: Msg
                               , newIds: [String]
                               , remIds: [String]) -> Future<Result<String>> {
-    var ret:Future<Result<String>> = Future(exec: gcdExecutionContext)
+    let mv:MVar<Result<String>> = MVar()
+
     var fetcher:GTMHTTPFetcher =
                 GTMHTTPFetcher(URLString: "https://www.googleapis.com/gmail/v1/users/me/messages/\(msg.id)/modify")
     fetcher.authorizer = auth
@@ -236,12 +248,12 @@ internal func modifyMsgThreads( auth: GTMOAuth2Authentication
     printMain("new label: \(newLabelObj)")
     fetcher.beginFetchWithCompletionHandler() { postRes, postErr in
         switch (JSValue.decode(postRes), postErr) {
-        case let (_ , .Some(err)): ret.sig(Result.Error(err))
-        case let (.Some(.JSObject(dict)), .None): ret.sig(pure("success"))
-        default:  ret.sig(Result.Error(NSError.errorWithDomain("couldn't modify msg", code: 1, userInfo:nil)))
+        case let (_ , .Some(err)): mv.put(Result.Error(err))
+        case let (.Some(.JSObject(dict)), .None): mv.put(pure("success"))
+        default:  mv.put(Result.Error(NSError.errorWithDomain("couldn't modify msg", code: 1, userInfo:nil)))
         }
     }
-    return ret
+    return Future(exec: gcdExecutionContext, mv.take())
 }
 
 typealias FrString = Future<Result<String>>
@@ -251,37 +263,28 @@ typealias FrMsgModification = Future<Result<(msg: Msg) -> FrString>>
 // since you need to know a label id, its better to just call that once and
 // "cache" it by just using the closed function that is returned
 func genArchiveMsg(auth: GTMOAuth2Authentication) -> FrMsgModification {
-    let f:FrMsgModification = Future(exec:gcdExecutionContext)
-    getLabelId("tinmailed", auth).map() { (res:Result<String>) -> Void in
+    return getLabelId("tinmailed", auth).flatMap() { res in
          switch res {
-            case let .Error(e): f.sig(.Error(e))
-            case let .Value(lblId): f.sig(pure({ msg -> FrString in
-                modifyMsgThreads(auth, msg, [lblId.value], ["INBOX"])
-                }))
+            case let .Error(e): return Future(exec: gcdExecutionContext, {.Error(e)})
+            case let .Value(lblId): return Future(exec: gcdExecutionContext) {
+                return pure({ msg in  modifyMsgThreads(auth, msg, [lblId.value], ["INBOX"]) })}
         }
     }
-    return f
 }
 
 func genSaveMsg(auth: GTMOAuth2Authentication) -> FrMsgModification {
-    let f:FrMsgModification = Future(exec:gcdExecutionContext)
-    getLabelId("tinmailed", auth).map() { (res:Result<String>) -> Void in
+    return getLabelId("tinmailed", auth).flatMap() { res in
          switch res {
-            case let .Error(e): f.sig(.Error(e))
-            case let .Value(lblId): f.sig(pure({ msg -> FrString in
-                modifyMsgThreads(auth, msg, [lblId.value], [])
-                }))
+            case let .Error(e): return Future(exec: gcdExecutionContext, {.Error(e)})
+            case let .Value(lblId): return Future(exec: gcdExecutionContext) {
+                return pure({ msg in  modifyMsgThreads(auth, msg, [lblId.value], []) })}
         }
     }
-    return f
 }
 
 func getLabelId(label: String, auth: GTMOAuth2Authentication) -> Future<Result<String>> {
     return getLabelList(auth).flatMap() {(res: Result<Array<Label>>) -> Future<Result<String>> in
-//        var ret: Future<Result<Box<String>>> = Future(exec: gcdExecutionContext)
-//        printMain("get label list res: \(res)")
-        
-        var ret:Future<Result<String>> = Future(exec: gcdExecutionContext)
+        let mv: MVar<Result<String>> = MVar()
         switch (res) {
         case let .Value(listRes):
 //            printMain("get label list res: \(listRes.value)")
@@ -307,17 +310,17 @@ func getLabelId(label: String, auth: GTMOAuth2Authentication) -> Future<Result<S
                         case let (_ , .Some(err)):
                             printMain("Error: \(err)")
                             printEncodedData(err.userInfo["data"] as? NSData)
-                            ret.sig(Result.Error(err))
-                        case let (.Some(lbl), .None): ret.sig(pure(lbl.id))
-                        default:  ret.sig(Result.Error(NSError.errorWithDomain("couldn't get label", code: 1, userInfo:nil)))
+                            mv.put(Result.Error(err))
+                        case let (.Some(lbl), .None): mv.put(pure(lbl.id))
+                        default:  mv.put(Result.Error(NSError.errorWithDomain("couldn't get label", code: 1, userInfo:nil)))
                     }
                 }
             } else {
-                ret.sig(pure(matchingLabels[0].id))
+                mv.put(pure(matchingLabels[0].id))
             }
-        case let .Error(e): ret.sig(.Error(e))
+        case let .Error(e): mv.put(.Error(e))
         }
-        return ret
+        return Future(exec:gcdExecutionContext, mv.take())
     }
 }
 
@@ -328,23 +331,23 @@ func getLabelList(auth: GTMOAuth2Authentication) -> Future<Result<Array<Label>>>
     fetcher.authorizer = auth
     fetcher.delegateQueue = NSOperationQueue()
     fetcher.shouldFetchInBackground = true
-    var ret: Future<Result<[Label]>> = Future(exec: gcdExecutionContext)
+    var mv: MVar<Result<[Label]>> = MVar()
 //    printMain("get label alist, about to run fetch")
     fetcher.beginFetchWithCompletionHandler() { getRes, getErr in
         switch (JSValue.decode(getRes), getErr) {
-        case let (_ , .Some(err)): ret.sig(Result.Error(err))
+        case let (_ , .Some(err)): mv.put(Result.Error(err))
         case let (.Some(.JSObject(dict)), .None):
 //            printMain("label list, no error: \(dict)")
             if let lblVals = dict["labels"] >>= JArrayFrom<Label, Label>.fromJSON {
 //                printMain("label list PARSED:, no error: \(lblVals)")
             
-                ret.sig(pure(lblVals))
+                mv.put(pure(lblVals))
             } else {
-                ret.sig(Result.Error(NSError.errorWithDomain("LabelListParse", code: 1, userInfo:nil)))
+                mv.put(Result.Error(NSError.errorWithDomain("LabelListParse", code: 1, userInfo:nil)))
             }
-        default:  ret.sig(Result.Error(NSError.errorWithDomain("couldn't get label list", code: 1, userInfo:nil)))
+        default: mv.put(Result.Error(NSError.errorWithDomain("couldn't get label list", code: 1, userInfo:nil)))
         }
         
     }
-    return ret
+    return Future(exec: gcdExecutionContext, mv.take())
 }

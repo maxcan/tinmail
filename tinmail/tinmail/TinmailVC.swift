@@ -40,6 +40,19 @@ class GAuthSingleton {
     }
 }
 
+class MsgModel {
+    var auth: GTMOAuth2Authentication?
+    class func sharedAuth() -> GTMOAuth2Authentication? {
+        return GAuthSingleton.sharedInstance.auth
+    }
+    class var sharedInstance : GAuthSingleton {
+        struct Static {
+            static let instance : GAuthSingleton = GAuthSingleton()
+        }
+        return Static.instance
+    }
+}
+
 class MsgVC: UIViewController {
     //    msg: Msg
     @IBOutlet var subjLbl: UILabel?
@@ -55,9 +68,9 @@ class MsgVC: UIViewController {
         if let s = subjLbl { s.text = msg.subject}
         if let f = fromLbl { f.text = msg.from}
     }
-    init(coder: NSCoder) {
-        super.init(coder: coder)
-    }
+//    init(coder: NSCoder) {
+//        super.init(coder: coder)
+//    }
 }
 
 class TinmailVC: UIViewController {
