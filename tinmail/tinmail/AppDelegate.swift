@@ -62,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Returns the managed object context for the application.
     // If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
     var managedObjectContext: NSManagedObjectContext {
-        if !_managedObjectContext {
+        if nil == _managedObjectContext {
             let coordinator = self.persistentStoreCoordinator
             if coordinator != nil {
                 _managedObjectContext = NSManagedObjectContext()
@@ -76,7 +76,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Returns the managed object model for the application.
     // If the model doesn't already exist, it is created from the application's model.
     var managedObjectModel: NSManagedObjectModel {
-        if !_managedObjectModel {
+        if nil == _managedObjectModel {
             let modelURL = NSBundle.mainBundle().URLForResource("tinmail", withExtension: "momd")
             _managedObjectModel = NSManagedObjectModel(contentsOfURL: modelURL)
         }
@@ -87,7 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Returns the persistent store coordinator for the application.
     // If the coordinator doesn't already exist, it is created and the application's store added to it.
     var persistentStoreCoordinator: NSPersistentStoreCoordinator {
-        if !_persistentStoreCoordinator {
+        if nil == _persistentStoreCoordinator {
             let storeURL = self.applicationDocumentsDirectory.URLByAppendingPathComponent("tinmail.sqlite")
             var error: NSError? = nil
             _persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)

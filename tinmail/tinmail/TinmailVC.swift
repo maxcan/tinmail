@@ -68,9 +68,9 @@ class MsgVC: UIViewController {
         if let s = subjLbl { s.text = msg.subject}
         if let f = fromLbl { f.text = msg.from}
     }
-    init(coder: NSCoder) {
-        super.init(coder: coder)
-    }
+//    init(coder: NSCoder) {
+//        super.init(coder: coder)
+//    }
 }
 
 class TinmailVC: UIViewController {
