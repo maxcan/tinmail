@@ -25,13 +25,13 @@ class AccountVC: UIViewController {
         self.navigationController?.pushViewController(gtmVC, animated: true)
     }
     
-    func succ(sender:UIViewController, auth: GTMOAuth2Authentication?, err: NSError){
-        if err != nil {
-            println("error:", err)
+    func succ(sender:UIViewController, auth: GTMOAuth2Authentication?, err: NSError?){
+        if let e = err {
+            println("error:", e)
         } else {
             println("success, popping to root vc")
             GAuthSingleton.sharedInstance.auth = auth
-            self.navigationController.popToRootViewControllerAnimated(true)
+            self.navigationController?.popToRootViewControllerAnimated(true)
         }
     }
 

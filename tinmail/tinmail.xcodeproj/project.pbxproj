@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		501DCBB7196515A100AA1C5C /* GmailAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501DCBB6196515A100AA1C5C /* GmailAPI.swift */; };
+		50413F3A19988CEC0076BBF5 /* MsgVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50413F3919988CEC0076BBF5 /* MsgVC.swift */; };
 		504F55AA1960E78E00353D32 /* GTMOAuth2ViewTouch.xib in Sources */ = {isa = PBXBuildFile; fileRef = 50F4368F1960D3DA000C4404 /* GTMOAuth2ViewTouch.xib */; };
 		5051ADDE1980AFB800992EAD /* swiftz_core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5047D28019690BB100667EED /* swiftz_core.framework */; };
 		5051ADDF1980AFB800992EAD /* swiftz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5047D27419690BB100667EED /* swiftz.framework */; };
@@ -109,6 +110,7 @@
 
 /* Begin PBXFileReference section */
 		501DCBB6196515A100AA1C5C /* GmailAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GmailAPI.swift; sourceTree = "<group>"; };
+		50413F3919988CEC0076BBF5 /* MsgVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MsgVC.swift; sourceTree = "<group>"; };
 		5047D26919690BB100667EED /* swiftz.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = swiftz.xcodeproj; path = ../vendor/maxcan/swiftz/swiftz.xcodeproj; sourceTree = "<group>"; };
 		5047D26C19690BB100667EED /* swiftz_core.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = swiftz_core.xcodeproj; path = ../vendor/maxcan/swiftz/swiftz_core/swiftz_core.xcodeproj; sourceTree = "<group>"; };
 		50E327C81963CCA6005DF2CE /* AccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountVC.swift; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 				50F436921960D44F000C4404 /* tinmail-Bridging-Header.h */,
 				50E327C81963CCA6005DF2CE /* AccountVC.swift */,
 				501DCBB6196515A100AA1C5C /* GmailAPI.swift */,
+				50413F3919988CEC0076BBF5 /* MsgVC.swift */,
 			);
 			path = tinmail;
 			sourceTree = "<group>";
@@ -433,6 +436,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50413F3A19988CEC0076BBF5 /* MsgVC.swift in Sources */,
 				50F4368C1960D3D1000C4404 /* GTMHTTPFetcher.m in Sources */,
 				50EEAF7E195BB6940014A2CA /* TinmailVC.swift in Sources */,
 				50EEAF7C195BB6940014A2CA /* tinmail.xcdatamodeld in Sources */,

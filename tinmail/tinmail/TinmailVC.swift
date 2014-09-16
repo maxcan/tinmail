@@ -53,25 +53,6 @@ class MsgModel {
     }
 }
 
-class MsgVC: UIViewController {
-    //    msg: Msg
-    @IBOutlet var subjLbl: UILabel?
-    @IBOutlet var fromLbl: UILabel?
-    func setMsg(msg: Msg) {
-        //self.msg = msg
-        printMain("about to set subj \(msg.subject) and f \(msg.from)")
-        
-        if (subjLbl == nil && fromLbl == nil) {
-            printMain("nils")
-            return
-        }
-        if let s = subjLbl { s.text = msg.subject}
-        if let f = fromLbl { f.text = msg.from}
-    }
-//    init(coder: NSCoder) {
-//        super.init(coder: coder)
-//    }
-}
 
 class TinmailVC: UIViewController {
     
