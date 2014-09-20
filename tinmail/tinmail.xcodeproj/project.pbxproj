@@ -118,7 +118,7 @@
 		50EEAF77195BB6940014A2CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50EEAF78195BB6940014A2CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		50EEAF7B195BB6940014A2CA /* tinmail.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = tinmail.xcdatamodel; sourceTree = "<group>"; };
-		50EEAF7D195BB6940014A2CA /* TinmailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TinmailVC.swift; sourceTree = "<group>"; };
+		50EEAF7D195BB6940014A2CA /* TinmailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TinmailVC.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		50EEAF80195BB6940014A2CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		50EEAF82195BB6940014A2CA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		50EEAF88195BB6940014A2CA /* tinmailTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tinmailTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -578,7 +578,7 @@
 					/Users/max/development/tinmail/vendor/maxcan/swiftz/build/Release,
 				);
 				INFOPLIST_FILE = tinmail/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_MODULE_NAME = tinmail;
@@ -598,7 +598,7 @@
 					/Users/max/development/tinmail/vendor/maxcan/swiftz/build/Release,
 				);
 				INFOPLIST_FILE = tinmail/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_MODULE_NAME = tinmail;

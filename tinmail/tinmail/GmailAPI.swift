@@ -30,8 +30,8 @@ struct MsgRef : Printable, JSONDecode {
     static func fromJSON(x: JSValue) -> MsgRef? {
         switch (x) {
         case let .JSObject(d):
-            let i:String? = d["id"] >>= JString.fromJSON
-            let ti:String? = d["threadId"] >>= JString.fromJSON
+            let i:String? = d["id"] >>- JString.fromJSON
+            let ti:String? = d["threadId"] >>- JString.fromJSON
             switch(i, ti) {
             case (let .Some(si), let .Some(sti)): return MsgRef(id:si, threadId:sti)
             default: return Optional.None
@@ -106,11 +106,11 @@ struct Label:JSONDecode {
     static func fromJSON(x: JSValue) -> Label? {
         switch (x) {
         case let .JSObject(d):
-            let i:String? = d["id"] >>= JString.fromJSON
-            let n:String? = d["name"] >>= JString.fromJSON
-            let mlv:LabelMessageListVisibility? = d["messageListVisibility"] >>= LabelMessageListVisibility.fromJSON
-            let llv:LabelListVisibility? = d["labelListVisibility"] >>= LabelListVisibility.fromJSON
-            let tp:LabelType? = d["type"] >>= LabelType.fromJSON
+            let i:String? = d["id"] >>- JString.fromJSON
+            let n:String? = d["name"] >>- JString.fromJSON
+            let mlv:LabelMessageListVisibility? = d["messageListVisibility"] >>- LabelMessageListVisibility.fromJSON
+            let llv:LabelListVisibility? = d["labelListVisibility"] >>- LabelListVisibility.fromJSON
+            let tp:LabelType? = d["type"] >>- LabelType.fromJSON
             return create <^> i <*> n <*> tp <*> .Some(mlv) <*> .Some(llv)
         default: return Optional.None
         }
@@ -132,16 +132,16 @@ struct Msg : Printable, JSONDecode {
     static func fromJSON(x: JSValue) -> Msg? {
         switch (x) {
         case let .JSObject(d):
-            let i:String? = d["id"] >>= JString.fromJSON
-            let ti:String? = d["threadId"] >>= JString.fromJSON
+            let i:String? = d["id"] >>- JString.fromJSON
+            let ti:String? = d["threadId"] >>- JString.fromJSON
             switch(d["payload"]) {
             case let .Some(.JSObject(payloadDict)):
-                let hdrs:[Dictionary<String,String>]? = payloadDict["headers"] >>= JArray<Dictionary<String, String>,JDictionary<String, JString>>.fromJSON
+                let hdrs:[Dictionary<String,String>]? = payloadDict["headers"] >>- JArray<Dictionary<String, String>,JDictionary<String, JString>>.fromJSON
                 if let h = hdrs {
                     var hdrDict:Dictionary<String,String> = [:]
                     for curHdr:Dictionary<String, String> in h {
-                        curHdr["value"] >>= { v in
-                            curHdr["name"] >>= { n in
+                        curHdr["value"] >>- { v in
+                            curHdr["name"] >>- { n in
                                 hdrDict.updateValue(v, forKey:n)
                             }
                         }
@@ -169,7 +169,7 @@ class MsgList : JSONDecode {
         var msgs:[MsgRef]?
         switch (x) {
         case let .JSObject(dict):
-            msgs = dict["messages"] >>= JArrayFrom<MsgRef, MsgRef>.fromJSON
+            msgs = dict["messages"] >>- JArrayFrom<MsgRef, MsgRef>.fromJSON
             if let m = msgs {return MsgList(m) } else { return Optional.None}
         default: return Optional.None
         }
@@ -306,10 +306,10 @@ func getLabelId(label: String, auth: GTMOAuth2Authentication) -> Future<Result<S
                 printMain("new label: \(newLabelObj)")
                 fetcher.beginFetchWithCompletionHandler() { postRes, postErr in
 //                    printMain("label id response: \(postRes)")
-                    switch (JSValue.decode(postRes) >>= Label.fromJSON, postErr) {
+                    switch (JSValue.decode(postRes) >>- Label.fromJSON, postErr) {
                         case let (_ , .Some(err)):
                             printMain("Error: \(err)")
-                            printEncodedData(err.userInfo["data"] as? NSData)
+                            printEncodedData(err.userInfo?["data"] as? NSData)
                             mv.put(Result.Error(err))
                         case let (.Some(lbl), .None): mv.put(pure(lbl.id))
                         default:  mv.put(Result.Error(NSError.errorWithDomain("couldn't get label", code: 1, userInfo:nil)))
@@ -338,7 +338,7 @@ func getLabelList(auth: GTMOAuth2Authentication) -> Future<Result<Array<Label>>>
         case let (_ , .Some(err)): mv.put(Result.Error(err))
         case let (.Some(.JSObject(dict)), .None):
 //            printMain("label list, no error: \(dict)")
-            if let lblVals = dict["labels"] >>= JArrayFrom<Label, Label>.fromJSON {
+            if let lblVals = dict["labels"] >>- JArrayFrom<Label, Label>.fromJSON {
 //                printMain("label list PARSED:, no error: \(lblVals)")
             
                 mv.put(pure(lblVals))

@@ -25,7 +25,7 @@ func printMain(s: AnyObject?) -> Void {
 }
 
 func printEncodedData(d: NSData?) -> Void {
-    printMain(NSString(data:d, encoding:NSASCIIStringEncoding))
+    { s1 in printMain(NSString(data:s1, encoding:NSASCIIStringEncoding)) } <^> d
 }
 class GAuthSingleton {
     var auth: GTMOAuth2Authentication?
@@ -113,8 +113,7 @@ class TinmailVC: UIViewController {
                 printMain(msg.description)
                 printMain("getting main")
                 onMainThread() {
-                    if let msgVC = self.storyboard.instantiateViewControllerWithIdentifier("MsgVC") as? MsgVC {
-                        
+                    if let msgVC = self.storyboard?.instantiateViewControllerWithIdentifier("MsgVC") as? MsgVC {
                         printMain("about to add msg view)")
                         self.MsgView?.addSubview(msgVC.view)  //TODO test this
                         msgVC.setMsg(msg)
