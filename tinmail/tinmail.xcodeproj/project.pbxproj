@@ -12,6 +12,7 @@
 		504F55AA1960E78E00353D32 /* GTMOAuth2ViewTouch.xib in Sources */ = {isa = PBXBuildFile; fileRef = 50F4368F1960D3DA000C4404 /* GTMOAuth2ViewTouch.xib */; };
 		5051ADDE1980AFB800992EAD /* swiftz_core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5047D28019690BB100667EED /* swiftz_core.framework */; };
 		5051ADDF1980AFB800992EAD /* swiftz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5047D27419690BB100667EED /* swiftz.framework */; };
+		506BE2D619CDD5B3002ECD89 /* MsgModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506BE2D519CDD5B3002ECD89 /* MsgModel.swift */; };
 		50E327C91963CCA6005DF2CE /* AccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E327C81963CCA6005DF2CE /* AccountVC.swift */; };
 		50EEAF79195BB6940014A2CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF78195BB6940014A2CA /* AppDelegate.swift */; };
 		50EEAF7C195BB6940014A2CA /* tinmail.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 50EEAF7A195BB6940014A2CA /* tinmail.xcdatamodeld */; };
@@ -113,6 +114,7 @@
 		50413F3919988CEC0076BBF5 /* MsgVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MsgVC.swift; sourceTree = "<group>"; };
 		5047D26919690BB100667EED /* swiftz.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = swiftz.xcodeproj; path = ../vendor/maxcan/swiftz/swiftz.xcodeproj; sourceTree = "<group>"; };
 		5047D26C19690BB100667EED /* swiftz_core.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = swiftz_core.xcodeproj; path = ../vendor/maxcan/swiftz/swiftz_core/swiftz_core.xcodeproj; sourceTree = "<group>"; };
+		506BE2D519CDD5B3002ECD89 /* MsgModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MsgModel.swift; sourceTree = "<group>"; };
 		50E327C81963CCA6005DF2CE /* AccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountVC.swift; sourceTree = "<group>"; };
 		50EEAF73195BB6940014A2CA /* tinmail.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tinmail.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50EEAF77195BB6940014A2CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -220,6 +222,7 @@
 				50E327C81963CCA6005DF2CE /* AccountVC.swift */,
 				501DCBB6196515A100AA1C5C /* GmailAPI.swift */,
 				50413F3919988CEC0076BBF5 /* MsgVC.swift */,
+				506BE2D519CDD5B3002ECD89 /* MsgModel.swift */,
 			);
 			path = tinmail;
 			sourceTree = "<group>";
@@ -445,6 +448,7 @@
 				50F436901960D3DA000C4404 /* GTMOAuth2ViewControllerTouch.m in Sources */,
 				50F436881960D3A1000C4404 /* GTMOAuth2Authentication.m in Sources */,
 				504F55AA1960E78E00353D32 /* GTMOAuth2ViewTouch.xib in Sources */,
+				506BE2D619CDD5B3002ECD89 /* MsgModel.swift in Sources */,
 				50E327C91963CCA6005DF2CE /* AccountVC.swift in Sources */,
 				501DCBB7196515A100AA1C5C /* GmailAPI.swift in Sources */,
 			);

@@ -14,9 +14,9 @@ import swiftz_core
     //    msg: Msg
     @IBOutlet var subjLbl: UILabel?
     @IBOutlet var fromLbl: UILabel?
-    // this is ugly.. but we "know" there's an auth at this point
-    let archFxn: Result<(msg: Msg) -> FrString>?
-    let saveFxn: Result<(msg: Msg) -> FrString>?
+    // this is ugly.. It would be nice to be able to set these when
+    var archFxn: ((msg: Msg) -> FrString)? = .None
+    var saveFxn: ((msg: Msg) -> FrString)? = .None
 
     @IBAction func archive(sender:AnyObject) {
         println("archiving")
@@ -34,14 +34,15 @@ import swiftz_core
 //            }
 //        }
     }
-    func setMsg(msg: Msg) {
-        //self.msg = msg
+    func setMsg(msgActions:MsgActions, msg: Msg) {
         printMain("about to set subj \(msg.subject) and f \(msg.from)")
-        
         if (subjLbl == nil && fromLbl == nil) {
             printMain("nils")
             return
         }
+        self.archFxn = msgActions.archive
+        self.saveFxn = msgActions.save
+
         if let s = subjLbl { s.text = msg.subject}
         if let f = fromLbl { f.text = msg.from}
     }
