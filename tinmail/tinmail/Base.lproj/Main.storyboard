@@ -94,7 +94,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="archive:" destination="vaJ-XG-eCh" eventType="touchUpInside" id="e42-Wj-T17"/>
+                                    <action selector="archive:" destination="vaJ-XG-eCh" eventType="touchUpInside" id="MPJ-bi-vAu"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6E3-OD-gJF">
@@ -103,7 +103,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="keep:" destination="vaJ-XG-eCh" eventType="touchUpInside" id="3Dt-QC-wD9"/>
+                                    <action selector="keep:" destination="vaJ-XG-eCh" eventType="touchUpInside" id="gam-9M-dk8"/>
                                 </connections>
                             </button>
                         </subviews>

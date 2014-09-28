@@ -11,18 +11,25 @@ import swiftz
 import swiftz_core
 
 @objc class MsgVC:  UIViewController {
-    //    msg: Msg
+    var msg: Msg? = nil
     @IBOutlet var subjLbl: UILabel?
     @IBOutlet var fromLbl: UILabel?
     // this is ugly.. It would be nice to be able to set these when
-    var archFxn: ((msg: Msg) -> FrString)? = .None
-    var saveFxn: ((msg: Msg) -> FrString)? = .None
+//    var archFxn: ((msg: Msg) -> FrString)? = .None
+//    var saveFxn: ((msg: Msg) -> FrString)? = .None
+    var msgModel: MsgModel? = nil
 
     @IBAction func archive(sender:AnyObject) {
-        println("archiving")
+        msgModel?.archMsg(msg!) {
+            onMainThread() { self.dismissViewControllerAnimated(true, { return } ) }
+        }
     }
     @IBAction func keep(sender:AnyObject) {
         println("keeping")
+        msgModel?.saveMsg(msg!) {
+            onMainThread() { self.dismissViewControllerAnimated(true, { return } ) }
+        }
+
 //        saveFxn().fold() { (saveResFxn:(Msg -> FrString)) in
 //            saveResFxn(msg).toEither.either({ e in die("err")}) { saveRes in
 //                saveRes.toEither().either({e in die("ERROR getting msgres: \(e)", 4)}) { str in
@@ -30,22 +37,27 @@ import swiftz_core
 //                    onMainThread() {
 //                        self.dismissViewControllerAnimated(false) { println("dismisssed VC") }
 //                    }
-//                }
+//                }gmai
 //            }
 //        }
     }
-    func setMsg(msgActions:MsgActions, msg: Msg) {
+    func setMsg(model:MsgModel, msg: Msg) {
         printMain("about to set subj \(msg.subject) and f \(msg.from)")
         if (subjLbl == nil && fromLbl == nil) {
             printMain("nils")
             return
         }
-        self.archFxn = msgActions.archive
-        self.saveFxn = msgActions.save
-
+        self.msgModel = model
+//        self.archFxn = msgActions.archive
+//        self.saveFxn = msgActions.save
+        self.msg = msg
         if let s = subjLbl { s.text = msg.subject}
         if let f = fromLbl { f.text = msg.from}
     }
+    deinit {
+        printMain("msgvc deinit")
+    }
+
     required init(coder: NSCoder) {
         super.init(coder: coder)
     }

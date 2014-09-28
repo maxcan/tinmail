@@ -55,8 +55,8 @@ class GAuthSingleton {
 
 
 class TinmailVC: UIViewController {
-    
     @IBOutlet var MsgView: UIView?
+    var msgVC:MsgVC?  // only here to keep the msgVC from deinit'ing
     override func viewDidLoad() {
         super.viewDidLoad()
         printMain(GAuthSingleton.sharedAuth()?.refreshToken)
@@ -86,9 +86,21 @@ class TinmailVC: UIViewController {
                     switch(r) {
                     case let .Value(v):
                         printMain("about to init msg model")
+                        func onEmpty () {
+                            onMainThread() {
+                                die("all done", 666)
+                            }
+                        }
+                        let model = MsgModel(auth, v.value, onEmpty:onEmpty) { (msgModel:MsgModel, msg:Msg) in
+                            onMainThread() {
+                                if let msgVC = self.storyboard?.instantiateViewControllerWithIdentifier("MsgVC") as? MsgVC {
+                                    printMain("about to add msg view)")
+                                    self.msgVC = msgVC
+                                    self.MsgView?.addSubview(msgVC.view)  //TODO test this
+                                    msgVC.setMsg(msgModel, msg:msg)
+                                }
+                            }
 
-                        let model = MsgModel(auth, v.value) { (msg:Msg) in
-                            printMain("loaded msg \(msg.id)")
                         }
                     case let .Error(e): die("ERROR getting msgres: \(e)", 6)
                     }

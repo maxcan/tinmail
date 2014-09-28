@@ -12,31 +12,38 @@ import swiftz_core
 
 class MsgModel {
     let auth: GTMOAuth2Authentication
-    var onNewMsg: Msg -> Void
+    let onNewMsg: (MsgModel, Msg) -> Void
+    let onEmpty: () -> Void
     let actions: MsgActions
     var msgs: [Msg] = []
 
-    init(_ auth:GTMOAuth2Authentication, _ actions: MsgActions, _ onNewMsg: (Msg -> Void)) {
+    init(_ auth:GTMOAuth2Authentication
+            , _ actions: MsgActions
+            , onEmpty: () -> Void
+            , onNewMsg: ((MsgModel, Msg) -> Void)) {
         self.auth = auth
         self.actions = actions
         self.onNewMsg = onNewMsg
+        self.onEmpty = onEmpty
         self.loadMsgs()
     }
-    func archMsg(msg: Msg) {
+    func archMsg(msg: Msg, _ then:() -> Void) {
         actions.archive(msg:msg).map() { (res:Result<String>) -> Void in
             switch (res) {
                 case let .Error(e): die("error archiving msg \(e)", 9)
                 case let .Value(v):
                     self.removeMsgFromQueue(msg)
+                    then()
             }
         }
     }
-    func saveMsg(msg: Msg) {
+    func saveMsg(msg: Msg, _ then:() -> Void) {
         actions.save(msg:msg).map() { (res:Result<String>) -> Void in
             switch (res) {
                 case let .Error(e): die("error saving msg \(e)", 10)
                 case let .Value(v):
                     self.removeMsgFromQueue(msg)
+                    then()
             }
         }
 
@@ -44,7 +51,7 @@ class MsgModel {
     private func removeMsgFromQueue(msg: Msg) {
         self.msgs = self.msgs.filter() { t in t.id != msg.id}
         if (self.msgs.count > 0) {
-            self.onNewMsg(self.msgs[0])
+            self.onNewMsg(self, self.msgs[0])
         } else {
             loadMsgs()
         }
@@ -54,7 +61,7 @@ class MsgModel {
         printMain("loadmsgs details")
         if (idx >= msgRefs.count) {
             if (self.msgs.count > 0) {
-                self.onNewMsg(self.msgs[0])
+                self.onNewMsg(self, self.msgs[0])
             } else {
                 die("no more messages",12)
             }
@@ -73,13 +80,16 @@ class MsgModel {
     private func loadMsgs() {
         printMain("load msgs")
         getMsgList(self.auth).map() { (listRes:Result<MsgList>) -> Void in
-    printMain("load msgs - GML callback")
+            printMain("load msgs - GML callback:")
 
             switch(listRes) {
             case let .Value(v):
                 let msgRefs = v.value.messages
                 // for some reason the message list doesn't work
 //                let mrList = List fromSeq(msgRefs)
+                if (msgRefs.count == 0) {
+                    return onEmpty()
+                }
                 self.msgs.reserveCapacity(msgRefs.count)
                 self.loadMsgDtls(msgRefs, 0)
             case let .Error(e):

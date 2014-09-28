@@ -185,7 +185,7 @@ class MsgList : JSONDecode {
         switch (x) {
         case let .JSObject(dict):
             msgs = dict["messages"] >>- JArrayFrom<MsgRef, MsgRef>.fromJSON
-            if let m = msgs {return MsgList(m) } else { return Optional.None}
+            if let m = msgs {return MsgList(m) } else { return MsgList([])}
         default: return Optional.None
         }
     }
