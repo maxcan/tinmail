@@ -12,7 +12,7 @@ import swiftz_core
 
 class MsgModel {
     let auth: GTMOAuth2Authentication
-    let onNewMsg: (MsgModel, Msg) -> Void
+    let onNewMsg: (MsgModel, Msg, Msg?) -> Void
     let onEmpty: () -> Void
     let actions: MsgActions
     var msgs: [Msg] = []
@@ -20,7 +20,7 @@ class MsgModel {
     init(_ auth:GTMOAuth2Authentication
             , _ actions: MsgActions
             , onEmpty: () -> Void
-            , onNewMsg: ((MsgModel, Msg) -> Void)) {
+            , onNewMsg: ((MsgModel, Msg, Msg?) -> Void)) {
         self.auth = auth
         self.actions = actions
         self.onNewMsg = onNewMsg
@@ -50,22 +50,19 @@ class MsgModel {
     }
     private func removeMsgFromQueue(msg: Msg) {
         self.msgs = self.msgs.filter() { t in t.id != msg.id}
-        if (self.msgs.count > 0) {
-            self.onNewMsg(self, self.msgs[0])
+        if (msgs.count > 0) {
+            self.onNewMsg(self, msgs[0], (msgs.count > 1 ? msgs[1] : nil))
         } else {
             loadMsgs()
         }
     }
     private func loadMsgDtls(msgRefs: [MsgRef], _ idx:Int) {
-//    private func loadMsgDtls(msgRefs: List<MsgRef>) {
-        printMain("loadmsgs details")
         if (idx >= msgRefs.count) {
-            if (self.msgs.count > 0) {
-                self.onNewMsg(self, self.msgs[0])
+            if (msgs.count > 0) {
+                self.onNewMsg(self, msgs[0], (msgs.count > 1 ? msgs[1] : nil))
             } else {
                 die("no more messages",12)
             }
-//        case let .Cons(msg, l):
         } else {
             getMsgDtl(auth, msgRefs[idx]).map() { ( msgR: Result<Msg>) -> Void in
                 switch(msgR) {
@@ -88,7 +85,7 @@ class MsgModel {
                 // for some reason the message list doesn't work
 //                let mrList = List fromSeq(msgRefs)
                 if (msgRefs.count == 0) {
-                    return onEmpty()
+                    return self.onEmpty()
                 }
                 self.msgs.reserveCapacity(msgRefs.count)
                 self.loadMsgDtls(msgRefs, 0)

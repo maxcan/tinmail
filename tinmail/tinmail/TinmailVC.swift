@@ -91,7 +91,7 @@ class TinmailVC: UIViewController {
                                 die("all done", 666)
                             }
                         }
-                        let model = MsgModel(auth, v.value, onEmpty:onEmpty) { (msgModel:MsgModel, msg:Msg) in
+                        let model = MsgModel(auth, v.value, onEmpty:onEmpty) { (msgModel, msg, nextMsg) in
                             onMainThread() {
                                 if let msgVC = self.storyboard?.instantiateViewControllerWithIdentifier("MsgVC") as? MsgVC {
                                     printMain("about to add msg view)")
