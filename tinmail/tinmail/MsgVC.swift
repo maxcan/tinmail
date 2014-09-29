@@ -14,9 +14,7 @@ import swiftz_core
     var msg: Msg? = nil
     @IBOutlet var subjLbl: UILabel?
     @IBOutlet var fromLbl: UILabel?
-    // this is ugly.. It would be nice to be able to set these when
-//    var archFxn: ((msg: Msg) -> FrString)? = .None
-//    var saveFxn: ((msg: Msg) -> FrString)? = .None
+    @IBOutlet var from2Lbl: UILabel?
     var msgModel: MsgModel? = nil
 
     @IBAction func archive(sender:AnyObject) {
@@ -29,17 +27,6 @@ import swiftz_core
         msgModel?.saveMsg(msg!) {
             onMainThread() { self.dismissViewControllerAnimated(true, { return } ) }
         }
-
-//        saveFxn().fold() { (saveResFxn:(Msg -> FrString)) in
-//            saveResFxn(msg).toEither.either({ e in die("err")}) { saveRes in
-//                saveRes.toEither().either({e in die("ERROR getting msgres: \(e)", 4)}) { str in
-//                    printMain("save res: \(str)")
-//                    onMainThread() {
-//                        self.dismissViewControllerAnimated(false) { println("dismisssed VC") }
-//                    }
-//                }gmai
-//            }
-//        }
     }
     func setMsg(model:MsgModel, msg: Msg) {
         printMain("about to set subj \(msg.subject) and f \(msg.from)")
@@ -51,8 +38,27 @@ import swiftz_core
 //        self.archFxn = msgActions.archive
 //        self.saveFxn = msgActions.save
         self.msg = msg
+        let regexWithName = NSRegularExpression(pattern: "\\s*(\\S.*\\S)\\s*<(\\S+@\\S+)>\\s*", options: nil, error: nil)
+        let regexWithoutName = NSRegularExpression(pattern: "\\s*(\\S+@\\S+)\\s*", options: nil, error: nil)
+        let matchWithoutName = regexWithoutName.firstMatchInString(msg.from, options: nil, range:NSMakeRange(0, countElements(msg.from)))
+        let matchWithName = regexWithName.firstMatchInString(msg.from, options: nil, range:NSMakeRange(0, countElements(msg.from)))
         if let s = subjLbl { s.text = msg.subject}
-        if let f = fromLbl { f.text = msg.from}
+        fromLbl >>- { f in self.from2Lbl >>- { (f2:UILabel) -> Void in
+            func rangeSubstr(s:String, r:NSRange) -> String {
+                return (s as NSString).substringWithRange(r)
+            }
+            if let matches = matchWithName {
+                f.text = rangeSubstr(msg.from, matches.rangeAtIndex(1))
+                f2.text = rangeSubstr(msg.from, matches.rangeAtIndex(2))
+            } else if let matches = matchWithoutName {
+                f.text = rangeSubstr(msg.from, matches.rangeAtIndex(1))
+                f2.text = rangeSubstr(msg.from, matches.rangeAtIndex(2))
+            } else {
+                f.text = msg.from
+                f2.text = ""
+            }
+            return
+        } }
     }
     deinit {
         printMain("msgvc deinit")

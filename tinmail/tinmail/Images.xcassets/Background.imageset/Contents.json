@@ -2,22 +2,21 @@
   "images" : [
     {
       "idiom" : "iphone",
-      "size" : "29x29",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "iphone",
+      "scale" : "2x",
+      "filename" : "Background5@2x.png"
+    },
+    {
+      "idiom" : "iphone",
+      "filename" : "Background4@2x.png",
+      "subtype" : "retina4",
       "scale" : "2x"
     },
     {
       "idiom" : "iphone",
-      "size" : "40x40",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "60x60",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "60x60",
       "scale" : "3x"
     }
   ],
